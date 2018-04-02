@@ -2,21 +2,29 @@ package com.orders;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 //import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity // This tells Hibernate to make a table out of this class
 public class OrderObjcet {
     @Id
-    @SequenceGenerator(name="SEQ_GEN_ORDER", sequenceName="SEQ_GEN_ORDER", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_GEN_ORDER")
+    @SequenceGenerator(name = "SEQ_GEN_ORDER", sequenceName = "SEQ_GEN_ORDER", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_ORDER")
     private Long IdOrder;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "TicketList",
+            joinColumns = {@JoinColumn(name = "IdOrder")},
+            inverseJoinColumns = {@JoinColumn(name = "IdBooked")})
+    private Set<Booking> bookings = new HashSet<>();
 
 //    private Integer IdUser;
 //
@@ -26,11 +34,12 @@ public class OrderObjcet {
 
     //private Integer paid;
 
-   // @Column(name = "orderDateTimeStamp", columnDefinition="DATETIME")
-   // @Temporal(TemporalType.TIMESTAMP)
+    // @Column(name = "orderDateTimeStamp", columnDefinition="DATETIME")
+    // @Temporal(TemporalType.TIMESTAMP)
 
-   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-   private LocalDateTime order_date_time_stamp;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime order_date_time_stamp;
+
 
 
     public Long getIdOrder() {
@@ -39,6 +48,14 @@ public class OrderObjcet {
 
     public void setIdOrder(Long idOrder) {
         IdOrder = idOrder;
+    }
+
+    public Set<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     public LocalDateTime getOrder_date_time_stamp() {
