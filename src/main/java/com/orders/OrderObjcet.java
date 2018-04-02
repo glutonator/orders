@@ -16,7 +16,7 @@ public class OrderObjcet {
     @Id
     @SequenceGenerator(name="SEQ_GEN_ORDER", sequenceName="SEQ_GEN_ORDER", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_GEN_ORDER")
-    private Integer IdOrder;
+    private Long IdOrder;
 
 //    private Integer IdUser;
 //
@@ -33,11 +33,11 @@ public class OrderObjcet {
    private LocalDateTime order_date_time_stamp;
 
 
-    public Integer getIdOrder() {
+    public Long getIdOrder() {
         return IdOrder;
     }
 
-    public void setIdOrder(Integer idOrder) {
+    public void setIdOrder(Long idOrder) {
         IdOrder = idOrder;
     }
 

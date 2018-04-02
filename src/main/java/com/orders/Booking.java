@@ -8,11 +8,17 @@ public class Booking {
     @Id
     @SequenceGenerator(name="SEQ_GEN_BOOKING", sequenceName="SEQ_GEN_BOOKING", allocationSize=1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE,generator="SEQ_GEN_BOOKING")
-    private Integer IdBooked;
+    private Long IdBooked;
 
-    private Integer IdUser;
+    private Long IdUser;
 
-    private Integer IdEvent;
+    private Long IdEvent;
 
-    private Integer IdTicket;
+    private Long IdTicket;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="tmp",nullable = false)
+    private TicketList ticketList;
+
+
 }

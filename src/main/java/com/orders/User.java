@@ -12,17 +12,17 @@ public class User {
     @Id
     @SequenceGenerator(name="SEQ_GEN_USER", sequenceName="SEQ_GEN_USER", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_GEN_USER")
-    private Integer id;
+    private Long id;
 
     private String name;
 
     private String email;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
