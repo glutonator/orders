@@ -15,8 +15,8 @@ public class OrderObjcet {
     @SequenceGenerator(name = "SEQ_GEN_ORDER", sequenceName = "SEQ_GEN_ORDER", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_ORDER")
     private Long IdOrder;
-
-    @ManyToMany(fetch = FetchType.LAZY,
+//fetch = FetchType.LAZY
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
@@ -40,7 +40,8 @@ public class OrderObjcet {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime order_date_time_stamp;
 
-
+    public OrderObjcet() {
+    }
 
     public Long getIdOrder() {
         return IdOrder;

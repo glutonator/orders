@@ -52,29 +52,30 @@ public class OrdersApplication implements CommandLineRunner {
 //
 //		orderObjcetRepository.save(post);
         //EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        OrderObjcet nowy = em.find(OrderObjcet.class, 2L);
-        nowy.getBookings().size();
-        Booking tag3 = new Booking((long) 99, (long) 99, (long) 99);
+//        em.getTransaction().begin();
+//        OrderObjcet nowy = em.find(OrderObjcet.class, 2L);
+//        nowy.getBookings().size();
+//        Booking tag3 = new Booking((long) 99, (long) 99, (long) 99);
+//
+//        nowy.getBookings().add(tag3);
+//        tag3.getOrderObjcets().add(nowy);
+//        em.getTransaction().commit();
+//        em.close();
 
-        nowy.getBookings().add(tag3);
-        tag3.getOrderObjcets().add(nowy);
-        em.getTransaction().commit();
-        em.close();
-
-//		OrderObjcet nowy = orderObjcetRepository.findById((long)2).orElse(null);
-//		Booking tag3 = new Booking((long)99,(long)99,(long)99);
-//		System.out.println(Hibernate.isInitialized(nowy.getBookings()));
+		OrderObjcet nowy = orderObjcetRepository.findById((long)3).orElse(null);
+		Booking tag3 = new Booking((long)99,(long)99,(long)99);
+		System.out.println(Hibernate.isInitialized(nowy.getBookings()));
 //		OrderObjcet ttt=this.em.find(OrderObjcet.class,(long)2);
 //		ttt.getBookings().size();
 //		ttt.getBookings().add(tag3);
 //		tag3.getOrderObjcets().add(ttt);
 //		orderObjcetRepository.save(ttt);
 
-//		nowy.getBookings().size();
-//		nowy.getBookings().add(tag3);
-//		tag3.getOrderObjcets().add(nowy);
-//		orderObjcetRepository.save(nowy);
+		nowy.getBookings().size();
+		nowy.getBookings().add(tag3);
+		tag3.getOrderObjcets().add(nowy);
+		orderObjcetRepository.save(nowy);
+        System.out.println(Hibernate.isInitialized(nowy.getBookings()));
 
 
         // =======================================

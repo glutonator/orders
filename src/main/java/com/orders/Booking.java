@@ -17,14 +17,17 @@ public class Booking {
     private Long IdEvent;
 
     private Long IdTicket;
-
-    @ManyToMany(fetch = FetchType.LAZY,
+//fetch = FetchType.LAZY
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
             mappedBy = "bookings")
     private Set<OrderObjcet> orderObjcets = new HashSet<>();
+
+    public Booking() {
+    }
 
     public Booking(Long idUser, Long idEvent, Long idTicket) {
         IdUser = idUser;
