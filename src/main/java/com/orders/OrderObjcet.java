@@ -15,17 +15,21 @@ public class OrderObjcet {
     @SequenceGenerator(name = "SEQ_GEN_ORDER", sequenceName = "SEQ_GEN_ORDER", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_ORDER")
     private Long IdOrder;
-//fetch = FetchType.LAZY
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
-    @JoinTable(name = "TicketList",
-            joinColumns = {@JoinColumn(name = "IdOrder")},
-            inverseJoinColumns = {@JoinColumn(name = "IdBooked")})
-    private Set<Booking> bookings = new HashSet<>();
+////fetch = FetchType.LAZY
+//    @ManyToMany(fetch = FetchType.EAGER,
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            })
+//    @JoinTable(name = "TicketList",
+//            joinColumns = {@JoinColumn(name = "IdOrder")},
+//            inverseJoinColumns = {@JoinColumn(name = "IdBooked")})
+//    private Set<Booking> bookings = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "orderObjcet")
+    private Set<Booking> bookings = new HashSet<>();
 //    private Integer IdUser;
 //
 //    private Integer IdEvent;

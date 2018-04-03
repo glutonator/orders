@@ -17,14 +17,18 @@ public class Booking {
     private Long IdEvent;
 
     private Long IdTicket;
-//fetch = FetchType.LAZY
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
-            mappedBy = "bookings")
-    private Set<OrderObjcet> orderObjcets = new HashSet<>();
+////fetch = FetchType.LAZY
+//    @ManyToMany(fetch = FetchType.EAGER,
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            },
+//            mappedBy = "bookings")
+//    private Set<OrderObjcet> orderObjcets = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "IdOrder", nullable = false)
+    private OrderObjcet orderObjcet;
 
     public Booking() {
     }
@@ -67,11 +71,19 @@ public class Booking {
         IdTicket = idTicket;
     }
 
-    public Set<OrderObjcet> getOrderObjcets() {
-        return orderObjcets;
+    public OrderObjcet getOrderObjcet() {
+        return orderObjcet;
     }
 
-    public void setOrderObjcets(Set<OrderObjcet> orderObjcets) {
-        this.orderObjcets = orderObjcets;
+    public void setOrderObjcet(OrderObjcet orderObjcet) {
+        this.orderObjcet = orderObjcet;
     }
+
+    //    public Set<OrderObjcet> getOrderObjcets() {
+//        return orderObjcets;
+//    }
+//
+//    public void setOrderObjcets(Set<OrderObjcet> orderObjcets) {
+//        this.orderObjcets = orderObjcets;
+//    }
 }
