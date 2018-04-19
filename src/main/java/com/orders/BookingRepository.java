@@ -2,6 +2,8 @@ package com.orders;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface BookingRepository extends CrudRepository<Booking, Long> {
+import java.util.List;
 
+public interface BookingRepository extends CrudRepository<Booking, Long> {
+    List<Booking> findByEventID(Long eventid);
 }

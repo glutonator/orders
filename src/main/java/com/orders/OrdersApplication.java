@@ -35,12 +35,12 @@ public class OrdersApplication implements CommandLineRunner {
         // =======================================
 
         // Create a Post
-		OrderObjcet post = new OrderObjcet();
-
+		OrderObjcet post = new OrderObjcet((long)22);
+        //post.setUserID((long)22);
 		// Create two tags
-		Booking comment1  = new Booking( Long.valueOf(11),Long.valueOf(22),Long.valueOf(33));
+		Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
 		comment1.setOrderObjcet(post);
-		Booking comment2 = new Booking((long)45,(long)45,(long)45);
+		Booking comment2 = new Booking((long)45,(long)45);
         comment2.setOrderObjcet(post);
 
 
@@ -55,7 +55,7 @@ public class OrdersApplication implements CommandLineRunner {
 		orderObjcetRepository.save(post);
 
         OrderObjcet orderObjcet= orderObjcetRepository.findById((long)1).orElse(null);
-        Booking comment3 = new Booking((long)999,(long)999,(long)999);
+        Booking comment3 = new Booking((long)999,(long)999);
         comment3.setOrderObjcet(orderObjcet);
         orderObjcet.getBookings().add(comment3);
         orderObjcetRepository.save(orderObjcet);

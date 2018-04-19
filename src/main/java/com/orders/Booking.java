@@ -1,6 +1,11 @@
 package com.orders;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,13 +15,23 @@ public class Booking {
     @Id
     @SequenceGenerator(name="SEQ_GEN_BOOKING", sequenceName="SEQ_GEN_BOOKING", allocationSize=1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE,generator="SEQ_GEN_BOOKING")
-    private Long IdBooked;
+    private Long relationID;
 
-    private Long IdUser;
+    private Long eventID;
 
-    private Long IdEvent;
+    private Long ticketID;
 
-    private Long IdTicket;
+//    private CustomDate RelationCreationDate;
+//
+//    private CustomDate RelationModificationDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime  RelationCreationDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime RelationModificationDate;
+
+    private boolean RelationStatus;
+
 ////fetch = FetchType.LAZY
 //    @ManyToMany(fetch = FetchType.EAGER,
 //            cascade = {
@@ -26,49 +41,41 @@ public class Booking {
 //            mappedBy = "bookings")
 //    private Set<OrderObjcet> orderObjcets = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdOrder", nullable = false)
+    @JsonBackReference
     private OrderObjcet orderObjcet;
 
     public Booking() {
     }
 
-    public Booking(Long idUser, Long idEvent, Long idTicket) {
-        IdUser = idUser;
-        IdEvent = idEvent;
-        IdTicket = idTicket;
+    public Booking(Long idEvent, Long idTicket) {
+        eventID = idEvent;
+        ticketID = idTicket;
     }
 
-    public Long getIdBooked() {
-        return IdBooked;
+    public Long getRelationID() {
+        return relationID;
     }
 
-    public void setIdBooked(Long idBooked) {
-        IdBooked = idBooked;
+    public void setRelationID(Long relationID) {
+        relationID = relationID;
     }
 
-    public Long getIdUser() {
-        return IdUser;
+    public Long getEventID() {
+        return eventID;
     }
 
-    public void setIdUser(Long idUser) {
-        IdUser = idUser;
+    public void setEventID(Long eventID) {
+        eventID = eventID;
     }
 
-    public Long getIdEvent() {
-        return IdEvent;
+    public Long getTicketID() {
+        return ticketID;
     }
 
-    public void setIdEvent(Long idEvent) {
-        IdEvent = idEvent;
-    }
-
-    public Long getIdTicket() {
-        return IdTicket;
-    }
-
-    public void setIdTicket(Long idTicket) {
-        IdTicket = idTicket;
+    public void setTicketID(Long ticketID) {
+        ticketID = ticketID;
     }
 
     public OrderObjcet getOrderObjcet() {
@@ -86,4 +93,15 @@ public class Booking {
 //    public void setOrderObjcets(Set<OrderObjcet> orderObjcets) {
 //        this.orderObjcets = orderObjcets;
 //    }
+
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "RelationID=" + relationID +
+                ", EventID=" + eventID +
+                ", TicketID=" + ticketID +
+                ", orderObjcet=" + orderObjcet +
+                '}';
+    }
 }

@@ -1,10 +1,16 @@
 package com.orders;
 
 import org.aspectj.weaver.ast.Or;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //import com.orders.User;
@@ -36,30 +42,133 @@ public class MainController {
 //        return userRepository.findAll();
 //    }
 //
-//    @Autowired
-//    private OrderObjcetRepository orderObjcetRepository;
+    @Autowired
+    private OrderObjcetRepository orderObjcetRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 //
 //
-//    // get order with specific idorder
-//    //@GetMapping(path = "/orders/{order}") // Map ONLY GET Requests
-//    @RequestMapping(method = RequestMethod.GET,value ="/orders/{order}" )
+    // get order with specific idorder
+    //@GetMapping(path = "/orders/{order}") // Map ONLY GET Requests
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/{order}" )
+    public @ResponseBody
+    OrderObjcet getOrderDetails(@PathVariable("order") Long idorder) {
+        return orderObjcetRepository.findById(idorder).orElse(null);
+    }
+
+    // create order with specific iduser,idevent,idticket
+    @RequestMapping(method = RequestMethod.POST,value ="/orders/new_order")
+    public @ResponseBody
+    String addNewOrder(@RequestParam Long iduser,@RequestParam Long idevent,@RequestParam Long idticket) {
+        OrderObjcet o = new OrderObjcet();
+        Booking b = new Booking();
+        b.setEventID(idevent);
+        b.setTicketID(idticket);
+        b.setOrderObjcet(o);
+        o.getBookings().add(b);
+        orderObjcetRepository.save(o);
+        return "Saved";
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+    //FU7
+    // create new order/ CreateNewRelations / in orderobject specified eventid and ticketid
+    @RequestMapping(method = RequestMethod.POST,value ="/orders/new_order2")
+    public @ResponseBody
+    String CreateNewRelations(@RequestBody OrderObjcet orderObjcet) {
+
+        for(Booking b : orderObjcet.getBookings()) {
+            b.setOrderObjcet(orderObjcet);
+        }
+        orderObjcetRepository.save(orderObjcet);
+        //update tickets status
+        //for UpdateTicketStatus();
+        //response if saving is successful
+        //tutaj moze być inna flaga, że się udało wysłać niż "saved"
+        return "Saved"; //to do backendu
+    }
+
+//    @RequestMapping(method = RequestMethod.GET,value ="/orders/test")
 //    public @ResponseBody
-//    Optional<OrderObjcet> getOrderDetails(@PathVariable("order") Integer idorder) {
-//        return orderObjcetRepository.findById(idorder);
+//    String testtest() {
+//        Logger log = LoggerFactory.getLogger(OrdersApplication.class);
+//        RestTemplate restTemplate = new RestTemplate();
+//        Quote quote = restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", Quote.class);
+//        log.info(quote.toString());
+//        return quote.toString();
 //    }
-//
-//    // create order with specific iduser,idevent,idticket
-//    @RequestMapping(method = RequestMethod.POST,value ="/orders/new_order")
-//    public @ResponseBody
-//    String addNewOrder(@RequestParam Integer iduser,@RequestParam Integer idevent,@RequestParam Integer idticket) {
-//        OrderObjcet o = new OrderObjcet();
-//        o.setIdUser(iduser);
-//        o.setIdEvent(idevent);
-//        o.setIdTicket(idticket);
-//        orderObjcetRepository.save(o);
-//        return "Saved";
-//    }
-//
+
+    //FU7
+    //update ticket status to occupied
+    boolean UpdateTicketStatus(Long eventId, Long ticketId, String TicketStatus) {
+        final String uri = "http://localhooooost:8080/managment/{eventid}/{ticketid}";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("eventid", eventId.toString());
+        params.put("ticketid", ticketId.toString());
+        params.put("ticketStatus", TicketStatus);
+
+        Ticket ticketUpdate = new Ticket(eventId,ticketId,TicketStatus);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put(uri,ticketUpdate,params);
+        return true;
+    }
+
+    //FU8
+    //show all orders of specific user
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/user/{userid}" )
+    public @ResponseBody
+    Iterable<OrderObjcet> ShowUserTickets(@PathVariable("userid") Long userid) {
+        return orderObjcetRepository.findByUserID(userid);
+    }
+    //FU9
+    //MakeResignation
+    @RequestMapping(method = RequestMethod.PUT,value ="/orders/resignation/{orderid}")
+    public @ResponseBody
+    String MakeResignation(@PathVariable("orderid") Long orderid) {
+        OrderObjcet orderObjcet=orderObjcetRepository.findById(orderid).orElse(null);
+        for(  Booking b: orderObjcet.getBookings()) {
+            //dla kazdego b trzeba wyslać UpdateTicketStatus
+        }
+        return "Saved"; //to do backendu
+    }
+
+    //FU11
+    //show all orders of specific event
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/event/{eventid}" )
+    public @ResponseBody
+    Iterable<Booking> ShowAllTicketsFromEvent (@PathVariable("eventid") Long eventid) {
+         return bookingRepository.findByEventID(eventid);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/event/{eventid}" )
+    public @ResponseBody
+    boolean CancelEvent (@PathVariable("eventid") Long eventid) {
+        List<Booking> bookingList= bookingRepository.findByEventID(eventid);
+        if(bookingList!=null) {
+            //trzeba zaupdateować statusy biletów z mikroserv zarz wydarzeniami
+            //UpdateTicketStatusForEvent(eventid);
+            return true;
+        }
+        else {
+            //no records in databese
+            return false;
+        }
+    }
+
+    boolean UpdateTicketStatusForEvent(Long eventid) {
+        //tutaj trzeba zapytanie do mikroserwisu zarz wydarz by zminił stan biletow
+        return true;
+    }
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 //    // delete order with specific idorder
 //    @RequestMapping(method = RequestMethod.DELETE,path ="/orders/delete_order/{order}")
 //    public @ResponseBody
@@ -67,12 +176,13 @@ public class MainController {
 //        orderObjcetRepository.deleteById(idorder);
 //    }
 //
-//    // get all orders
-//    @RequestMapping(method = RequestMethod.GET,value ="/orders/all_orders" )
-//    public @ResponseBody
-//    Iterable<OrderObjcet> getAllOrders() {
-//        return orderObjcetRepository.findAll();
-//    }
+
+    // get all orders
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/all_orders" )
+    public @ResponseBody
+    Iterable<OrderObjcet> getAllOrders() {
+        return orderObjcetRepository.findAll();
+    }
 //
 ////    // get all orders for specific iduser
 ////    @RequestMapping(method = RequestMethod.GET,value ="/orders/{user}/all_orders" )

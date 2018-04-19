@@ -14,7 +14,11 @@ public class OrderObjcet {
     @Id
     @SequenceGenerator(name = "SEQ_GEN_ORDER", sequenceName = "SEQ_GEN_ORDER", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_ORDER")
-    private Long IdOrder;
+    private Long orderID;
+
+    private Long userID;
+
+    private float paymentOrder;
 ////fetch = FetchType.LAZY
 //    @ManyToMany(fetch = FetchType.EAGER,
 //            cascade = {
@@ -41,18 +45,38 @@ public class OrderObjcet {
     // @Column(name = "orderDateTimeStamp", columnDefinition="DATETIME")
     // @Temporal(TemporalType.TIMESTAMP)
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime order_date_time_stamp;
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+//    private LocalDateTime order_date_time_stamp;
 
     public OrderObjcet() {
     }
 
-    public Long getIdOrder() {
-        return IdOrder;
+    public OrderObjcet(Long userID) {
+        this.userID = userID;
     }
 
-    public void setIdOrder(Long idOrder) {
-        IdOrder = idOrder;
+    public Long getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(Long orderID) {
+        orderID = orderID;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        userID = userID;
+    }
+
+    public float getPaymentOrder() {
+        return paymentOrder;
+    }
+
+    public void setPaymentOrder(float paymentOrder) {
+        paymentOrder = paymentOrder;
     }
 
     public Set<Booking> getBookings() {
@@ -63,11 +87,22 @@ public class OrderObjcet {
         this.bookings = bookings;
     }
 
-    public LocalDateTime getOrder_date_time_stamp() {
-        return order_date_time_stamp;
-    }
+//    public LocalDateTime getOrder_date_time_stamp() {
+//        return order_date_time_stamp;
+//    }
+//
+//    public void setOrder_date_time_stamp(LocalDateTime order_date_time_stamp) {
+//        this.order_date_time_stamp = order_date_time_stamp;
+//    }
 
-    public void setOrder_date_time_stamp(LocalDateTime order_date_time_stamp) {
-        this.order_date_time_stamp = order_date_time_stamp;
+    @Override
+    public String toString() {
+        return "OrderObjcet{" +
+                "OrderID=" + orderID +
+                ", UserID=" + userID +
+                ", PaymentOrder=" + paymentOrder +
+                ", bookings=" + bookings +
+                //", order_date_time_stamp=" + order_date_time_stamp +
+                '}';
     }
 }
