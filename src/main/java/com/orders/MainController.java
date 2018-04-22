@@ -49,7 +49,7 @@ public class MainController {
     @RequestMapping(method = RequestMethod.GET,value ="/orders/{order}" )
     public @ResponseBody
     OrderObjcet getOrderDetails(@PathVariable("order") Long idorder) {
-     //   tttest();
+        tttest();
         return orderObjcetRepository.findById(idorder).orElse(null);
     }
 
