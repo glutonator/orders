@@ -49,9 +49,17 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Long idEvent, Long idTicket) {
-        eventID = idEvent;
-        ticketID = idTicket;
+    public Booking(Long eventID, Long ticketID) {
+        this.eventID = eventID;
+        this.ticketID = ticketID;
+    }
+
+
+    public Booking(Long eventID, Long ticketID, LocalDateTime relationCreationDate, boolean relationStatus) {
+        this.eventID = eventID;
+        this.ticketID = ticketID;
+        RelationCreationDate = relationCreationDate;
+        RelationStatus = relationStatus;
     }
 
     public Long getRelationID() {
@@ -86,6 +94,30 @@ public class Booking {
         this.orderObjcet = orderObjcet;
     }
 
+    public LocalDateTime getRelationCreationDate() {
+        return RelationCreationDate;
+    }
+
+    public void setRelationCreationDate(LocalDateTime relationCreationDate) {
+        RelationCreationDate = relationCreationDate;
+    }
+
+    public LocalDateTime getRelationModificationDate() {
+        return RelationModificationDate;
+    }
+
+    public void setRelationModificationDate(LocalDateTime relationModificationDate) {
+        RelationModificationDate = relationModificationDate;
+    }
+
+    public boolean isRelationStatus() {
+        return RelationStatus;
+    }
+
+    public void setRelationStatus(boolean relationStatus) {
+        RelationStatus = relationStatus;
+    }
+
     //    public Set<OrderObjcet> getOrderObjcets() {
 //        return orderObjcets;
 //    }
@@ -98,9 +130,12 @@ public class Booking {
     @Override
     public String toString() {
         return "Booking{" +
-                "RelationID=" + relationID +
-                ", EventID=" + eventID +
-                ", TicketID=" + ticketID +
+                "relationID=" + relationID +
+                ", eventID=" + eventID +
+                ", ticketID=" + ticketID +
+                ", RelationCreationDate=" + RelationCreationDate +
+                ", RelationModificationDate=" + RelationModificationDate +
+                ", RelationStatus=" + RelationStatus +
                 ", orderObjcet=" + orderObjcet +
                 '}';
     }

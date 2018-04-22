@@ -18,7 +18,7 @@ public class OrderObjcet {
 
     private Long userID;
 
-    private float paymentOrder;
+    private Long paymentOrder;
 ////fetch = FetchType.LAZY
 //    @ManyToMany(fetch = FetchType.EAGER,
 //            cascade = {
@@ -55,6 +55,11 @@ public class OrderObjcet {
         this.userID = userID;
     }
 
+    public OrderObjcet(Long userID, Long paymentOrder) {
+        this.userID = userID;
+        this.paymentOrder = paymentOrder;
+    }
+
     public Long getOrderID() {
         return orderID;
     }
@@ -71,12 +76,12 @@ public class OrderObjcet {
         userID = userID;
     }
 
-    public float getPaymentOrder() {
+    public Long getPaymentOrder() {
         return paymentOrder;
     }
 
-    public void setPaymentOrder(float paymentOrder) {
-        paymentOrder = paymentOrder;
+    public void setPaymentOrder(Long paymentOrder) {
+        this.paymentOrder = paymentOrder;
     }
 
     public Set<Booking> getBookings() {

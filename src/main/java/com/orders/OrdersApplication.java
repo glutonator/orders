@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,11 +37,16 @@ public class OrdersApplication implements CommandLineRunner {
 
         // Create a Post
 		OrderObjcet post = new OrderObjcet((long)22);
+		post.setPaymentOrder(orderObjcetRepository.count()+10);
         //post.setUserID((long)22);
 		// Create two tags
-		Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
+        //LocalDateTime tempdate=LocalDateTime.of(2018,04,21,12,14,57);
+        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33),LocalDateTime.now(),true);
+//        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
 		comment1.setOrderObjcet(post);
-		Booking comment2 = new Booking((long)45,(long)45);
+        Booking comment2 = new Booking((long)45,(long)45,LocalDateTime.now(),true);
+//        Booking comment2 = new Booking((long)45,(long)45);
+
         comment2.setOrderObjcet(post);
 
 
@@ -53,9 +59,11 @@ public class OrdersApplication implements CommandLineRunner {
 		//tag2.getOrderObjcets().add(post);
 
 		orderObjcetRepository.save(post);
+       // OrderObjcet orderObjcet2= orderObjcetRepository.findById((long)1).orElse(null);
+
 
         OrderObjcet orderObjcet= orderObjcetRepository.findById((long)1).orElse(null);
-        Booking comment3 = new Booking((long)999,(long)999);
+        Booking comment3 = new Booking((long)999,(long)999,LocalDateTime.now(),true);
         comment3.setOrderObjcet(orderObjcet);
         orderObjcet.getBookings().add(comment3);
         orderObjcetRepository.save(orderObjcet);

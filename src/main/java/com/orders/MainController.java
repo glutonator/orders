@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +36,6 @@ public class MainController {
 //        n.setEmail(email);
 //        userRepository.save(n);
 //        return "Saved";
-//    }
-//
-//    @GetMapping(path="/all")
-//    public @ResponseBody Iterable<User> getAllUsers() {
-//        // This returns a JSON or XML with the users
-//        return userRepository.findAll();
 //    }
 //
     @Autowired
@@ -76,17 +72,21 @@ public class MainController {
     // create new order/ CreateNewRelations / in orderobject specified eventid and ticketid
     @RequestMapping(method = RequestMethod.POST,value ="/orders/new_order2")
     public @ResponseBody
-    String CreateNewRelations(@RequestBody OrderObjcet orderObjcet) {
+    CreateNewRelationsRES CreateNewRelations(@RequestBody OrderObjcet orderObjcet) {
 
         for(Booking b : orderObjcet.getBookings()) {
             b.setOrderObjcet(orderObjcet);
+            b.setRelationCreationDate(LocalDateTime.now());
+            b.setRelationStatus(true);
         }
+        orderObjcet.setPaymentOrder(orderObjcetRepository.count()+10);
         orderObjcetRepository.save(orderObjcet);
         //update tickets status
         //for UpdateTicketStatus();
         //response if saving is successful
         //tutaj moze być inna flaga, że się udało wysłać niż "saved"
-        return "Saved"; //to do backendu
+        return new CreateNewRelationsRES(true,orderObjcet.getOrderID());
+        //return "Saved"; //to do backendu
     }
 
 //    @RequestMapping(method = RequestMethod.GET,value ="/orders/test")
@@ -125,12 +125,13 @@ public class MainController {
     //MakeResignation
     @RequestMapping(method = RequestMethod.PUT,value ="/orders/resignation/{orderid}")
     public @ResponseBody
-    String MakeResignation(@PathVariable("orderid") Long orderid) {
+    MakeResignationRES MakeResignation(@PathVariable("orderid") Long orderid) {
         OrderObjcet orderObjcet=orderObjcetRepository.findById(orderid).orElse(null);
         for(  Booking b: orderObjcet.getBookings()) {
             //dla kazdego b trzeba wyslać UpdateTicketStatus
         }
-        return "Saved"; //to do backendu
+        return new MakeResignationRES(true,orderid, orderObjcet.getPaymentOrder());
+        //return "Saved"; //to do backendu
     }
 
     //FU11
@@ -141,8 +142,9 @@ public class MainController {
          return bookingRepository.findByEventID(eventid);
 
     }
-
-    @RequestMapping(method = RequestMethod.GET,value ="/orders/event/{eventid}" )
+    //FU11
+    //cancel event and all tickets
+    @RequestMapping(method = RequestMethod.GET,value ="/orders/event/delete/{eventid}" )
     public @ResponseBody
     boolean CancelEvent (@PathVariable("eventid") Long eventid) {
         List<Booking> bookingList= bookingRepository.findByEventID(eventid);
@@ -157,6 +159,7 @@ public class MainController {
         }
     }
 
+    //FU11
     boolean UpdateTicketStatusForEvent(Long eventid) {
         //tutaj trzeba zapytanie do mikroserwisu zarz wydarz by zminił stan biletow
         return true;
@@ -183,35 +186,5 @@ public class MainController {
     Iterable<OrderObjcet> getAllOrders() {
         return orderObjcetRepository.findAll();
     }
-//
-////    // get all orders for specific iduser
-////    @RequestMapping(method = RequestMethod.GET,value ="/orders/{user}/all_orders" )
-////    public @ResponseBody
-////    Iterable<OrderObjcet> getAllOrdersForUser(@PathVariable("user") Integer iduser) {
-////        return orderObjcetRepository.
-////    }
-//
-//
-//
-//
-//
-//    @GetMapping(path = "/add2") // Map ONLY GET Requests
-//    public @ResponseBody
-//    String addNewOrder(@RequestParam Integer iduser) {
-//        // @ResponseBody means the returned String is the response, not a view name
-//        // @RequestParam means it is a parameter from the GET or POST request
-//
-//        OrderObjcet o = new OrderObjcet();
-//        o.setIdUser((Integer)77);
-//        o.setIdEvent((Integer)56);
-//        o.setIdTicket((Integer)78);
-//
-//        orderObjcetRepository.save(o);
-//        return "Saved";
-//    }
-//    @GetMapping(path = "/else")
-//    public @ResponseBody
-//    Iterable<OrderObjcet> getAllOrders2() {
-//        return orderObjcetRepository.findAll();
-//    }
+
 }
