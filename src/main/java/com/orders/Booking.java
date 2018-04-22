@@ -21,25 +21,12 @@ public class Booking {
 
     private Long ticketID;
 
-//    private CustomDate RelationCreationDate;
-//
-//    private CustomDate RelationModificationDate;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime  RelationCreationDate;
+    private LocalDateTime  relationCreationDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime RelationModificationDate;
+    private LocalDateTime relationModificationDate;
 
-    private boolean RelationStatus;
-
-////fetch = FetchType.LAZY
-//    @ManyToMany(fetch = FetchType.EAGER,
-//            cascade = {
-//                    CascadeType.PERSIST,
-//                    CascadeType.MERGE
-//            },
-//            mappedBy = "bookings")
-//    private Set<OrderObjcet> orderObjcets = new HashSet<>();
+    private boolean relationStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdOrder", nullable = false)
@@ -54,12 +41,20 @@ public class Booking {
         this.ticketID = ticketID;
     }
 
-
     public Booking(Long eventID, Long ticketID, LocalDateTime relationCreationDate, boolean relationStatus) {
         this.eventID = eventID;
         this.ticketID = ticketID;
-        RelationCreationDate = relationCreationDate;
-        RelationStatus = relationStatus;
+        this.relationCreationDate = relationCreationDate;
+        this.relationStatus = relationStatus;
+    }
+
+    public Booking(Long eventID, Long ticketID, LocalDateTime relationCreationDate, LocalDateTime relationModificationDate, boolean relationStatus, OrderObjcet orderObjcet) {
+        this.eventID = eventID;
+        this.ticketID = ticketID;
+        this.relationCreationDate = relationCreationDate;
+        this.relationModificationDate = relationModificationDate;
+        this.relationStatus = relationStatus;
+        this.orderObjcet = orderObjcet;
     }
 
     public Long getRelationID() {
@@ -67,7 +62,7 @@ public class Booking {
     }
 
     public void setRelationID(Long relationID) {
-        relationID = relationID;
+        this.relationID = relationID;
     }
 
     public Long getEventID() {
@@ -75,7 +70,7 @@ public class Booking {
     }
 
     public void setEventID(Long eventID) {
-        eventID = eventID;
+        this.eventID = eventID;
     }
 
     public Long getTicketID() {
@@ -83,7 +78,31 @@ public class Booking {
     }
 
     public void setTicketID(Long ticketID) {
-        ticketID = ticketID;
+        this.ticketID = ticketID;
+    }
+
+    public LocalDateTime getRelationCreationDate() {
+        return relationCreationDate;
+    }
+
+    public void setRelationCreationDate(LocalDateTime relationCreationDate) {
+        this.relationCreationDate = relationCreationDate;
+    }
+
+    public LocalDateTime getRelationModificationDate() {
+        return relationModificationDate;
+    }
+
+    public void setRelationModificationDate(LocalDateTime relationModificationDate) {
+        this.relationModificationDate = relationModificationDate;
+    }
+
+    public boolean isRelationStatus() {
+        return relationStatus;
+    }
+
+    public void setRelationStatus(boolean relationStatus) {
+        this.relationStatus = relationStatus;
     }
 
     public OrderObjcet getOrderObjcet() {
@@ -94,48 +113,15 @@ public class Booking {
         this.orderObjcet = orderObjcet;
     }
 
-    public LocalDateTime getRelationCreationDate() {
-        return RelationCreationDate;
-    }
-
-    public void setRelationCreationDate(LocalDateTime relationCreationDate) {
-        RelationCreationDate = relationCreationDate;
-    }
-
-    public LocalDateTime getRelationModificationDate() {
-        return RelationModificationDate;
-    }
-
-    public void setRelationModificationDate(LocalDateTime relationModificationDate) {
-        RelationModificationDate = relationModificationDate;
-    }
-
-    public boolean isRelationStatus() {
-        return RelationStatus;
-    }
-
-    public void setRelationStatus(boolean relationStatus) {
-        RelationStatus = relationStatus;
-    }
-
-    //    public Set<OrderObjcet> getOrderObjcets() {
-//        return orderObjcets;
-//    }
-//
-//    public void setOrderObjcets(Set<OrderObjcet> orderObjcets) {
-//        this.orderObjcets = orderObjcets;
-//    }
-
-
     @Override
     public String toString() {
         return "Booking{" +
                 "relationID=" + relationID +
                 ", eventID=" + eventID +
                 ", ticketID=" + ticketID +
-                ", RelationCreationDate=" + RelationCreationDate +
-                ", RelationModificationDate=" + RelationModificationDate +
-                ", RelationStatus=" + RelationStatus +
+                ", relationCreationDate=" + relationCreationDate +
+                ", relationModificationDate=" + relationModificationDate +
+                ", relationStatus=" + relationStatus +
                 ", orderObjcet=" + orderObjcet +
                 '}';
     }

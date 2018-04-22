@@ -1,10 +1,7 @@
 package com.orders;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-//import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,34 +16,11 @@ public class OrderObjcet {
     private Long userID;
 
     private Long paymentOrder;
-////fetch = FetchType.LAZY
-//    @ManyToMany(fetch = FetchType.EAGER,
-//            cascade = {
-//                    CascadeType.PERSIST,
-//                    CascadeType.MERGE
-//            })
-//    @JoinTable(name = "TicketList",
-//            joinColumns = {@JoinColumn(name = "IdOrder")},
-//            inverseJoinColumns = {@JoinColumn(name = "IdBooked")})
-//    private Set<Booking> bookings = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "orderObjcet")
     private Set<Booking> bookings = new HashSet<>();
-//    private Integer IdUser;
-//
-//    private Integer IdEvent;
-//
-//    private Integer IdTicket;
-
-    //private Integer paid;
-
-    // @Column(name = "orderDateTimeStamp", columnDefinition="DATETIME")
-    // @Temporal(TemporalType.TIMESTAMP)
-
-//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-//    private LocalDateTime order_date_time_stamp;
 
     public OrderObjcet() {
     }
@@ -58,6 +32,12 @@ public class OrderObjcet {
     public OrderObjcet(Long userID, Long paymentOrder) {
         this.userID = userID;
         this.paymentOrder = paymentOrder;
+    }
+
+    public OrderObjcet(Long userID, Long paymentOrder, Set<Booking> bookings) {
+        this.userID = userID;
+        this.paymentOrder = paymentOrder;
+        this.bookings = bookings;
     }
 
     public Long getOrderID() {
@@ -73,7 +53,7 @@ public class OrderObjcet {
     }
 
     public void setUserID(Long userID) {
-        userID = userID;
+        this.userID = userID;
     }
 
     public Long getPaymentOrder() {
@@ -92,22 +72,13 @@ public class OrderObjcet {
         this.bookings = bookings;
     }
 
-//    public LocalDateTime getOrder_date_time_stamp() {
-//        return order_date_time_stamp;
-//    }
-//
-//    public void setOrder_date_time_stamp(LocalDateTime order_date_time_stamp) {
-//        this.order_date_time_stamp = order_date_time_stamp;
-//    }
-
     @Override
     public String toString() {
         return "OrderObjcet{" +
-                "OrderID=" + orderID +
-                ", UserID=" + userID +
-                ", PaymentOrder=" + paymentOrder +
+                "orderID=" + orderID +
+                ", userID=" + userID +
+                ", paymentOrder=" + paymentOrder +
                 ", bookings=" + bookings +
-                //", order_date_time_stamp=" + order_date_time_stamp +
                 '}';
     }
 }

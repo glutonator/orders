@@ -49,6 +49,7 @@ public class MainController {
     @RequestMapping(method = RequestMethod.GET,value ="/orders/{order}" )
     public @ResponseBody
     OrderObjcet getOrderDetails(@PathVariable("order") Long idorder) {
+     //   tttest();
         return orderObjcetRepository.findById(idorder).orElse(null);
     }
 
@@ -73,7 +74,6 @@ public class MainController {
     @RequestMapping(method = RequestMethod.POST,value ="/orders/new_order2")
     public @ResponseBody
     CreateNewRelationsRES CreateNewRelations(@RequestBody OrderObjcet orderObjcet) {
-
         for(Booking b : orderObjcet.getBookings()) {
             b.setOrderObjcet(orderObjcet);
             b.setRelationCreationDate(LocalDateTime.now());
@@ -98,6 +98,16 @@ public class MainController {
 //        log.info(quote.toString());
 //        return quote.toString();
 //    }
+
+    String tttest() {
+        Logger log = LoggerFactory.getLogger(OrdersApplication.class);
+        final String uri = "http://localhost:8080/demo/orders/new_order2";
+        OrderObjcet orderObjcet = new OrderObjcet((long)88,(long)45);
+        RestTemplate restTemplate = new RestTemplate();
+        CreateNewRelationsRES resp=restTemplate.postForObject(uri,orderObjcet,CreateNewRelationsRES.class);
+        log.info(resp.toString());
+        return resp.toString();
+    }
 
     //FU7
     //update ticket status to occupied
@@ -126,6 +136,7 @@ public class MainController {
     @RequestMapping(method = RequestMethod.PUT,value ="/orders/resignation/{orderid}")
     public @ResponseBody
     MakeResignationRES MakeResignation(@PathVariable("orderid") Long orderid) {
+
         OrderObjcet orderObjcet=orderObjcetRepository.findById(orderid).orElse(null);
         for(  Booking b: orderObjcet.getBookings()) {
             //dla kazdego b trzeba wyslać UpdateTicketStatus

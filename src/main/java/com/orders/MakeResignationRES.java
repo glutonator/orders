@@ -5,6 +5,9 @@ public class MakeResignationRES {
     private Long orderID;
     private Long paymentOrder;
 
+    public MakeResignationRES() {
+    }
+
     public MakeResignationRES(boolean status, Long orderID, Long paymentOrder) {
         this.status = status;
         this.orderID = orderID;

@@ -4,6 +4,9 @@ public class CreateNewRelationsRES {
     private boolean status;
     private Long orderID;
 
+    public CreateNewRelationsRES() {
+    }
+
     public CreateNewRelationsRES(boolean status) {
         this.status = status;
     }
