@@ -22,7 +22,7 @@ public class MainController {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
     //FU7
     // create new order/ CreateNewRelations / in orderobject specified eventid and ticketid
-    @RequestMapping(method = RequestMethod.POST, value = "/new_order2")
+    @RequestMapping(method = RequestMethod.POST, value = "/new_order")
     public @ResponseBody
     CreateNewRelationsRES createNewRelations(@RequestBody OrderObjcet orderObjcet) {
         return orderService.createRelations(orderObjcet);
@@ -94,7 +94,7 @@ public class MainController {
     }
 
     // create order with specific iduser,idevent,idticket
-    @RequestMapping(method = RequestMethod.POST, value = "/new_order")
+    @RequestMapping(method = RequestMethod.POST, value = "/new_order_old")
     public @ResponseBody
     String addNewOrder(@RequestParam Long iduser, @RequestParam Long idevent, @RequestParam Long idticket) {
         try {
