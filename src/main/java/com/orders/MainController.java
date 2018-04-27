@@ -97,13 +97,18 @@ public class MainController {
     @RequestMapping(method = RequestMethod.POST, value = "/new_order")
     public @ResponseBody
     String addNewOrder(@RequestParam Long iduser, @RequestParam Long idevent, @RequestParam Long idticket) {
-        OrderObjcet o = new OrderObjcet();
-        Booking b = new Booking();
-        b.setEventID(idevent);
-        b.setTicketID(idticket);
-        b.setOrderObjcet(o);
-        o.getBookings().add(b);
-        orderObjcetRepository.save(o);
+        try {
+            orderService.testaddNewOrder(iduser,idevent,idticket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        OrderObjcet o = new OrderObjcet();
+//        Booking b = new Booking();
+//        b.setEventID(idevent);
+//        b.setTicketID(idticket);
+//        b.setOrderObjcet(o);
+//        o.getBookings().add(b);
+//        orderObjcetRepository.save(o);
         return "Saved";
     }
 

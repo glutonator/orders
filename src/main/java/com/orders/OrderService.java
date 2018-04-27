@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class OrderService {
 
     //FU7
     // create new order/ CreateNewRelations / in orderobject specified eventid and ticketid
-    CreateNewRelationsRES createRelations (OrderObjcet orderObjcet) {
+    public CreateNewRelationsRES createRelations (OrderObjcet orderObjcet) {
         for(Booking b : orderObjcet.getBookings()) {
             b.setOrderObjcet(orderObjcet);
             b.setRelationCreationDate(LocalDateTime.now());
@@ -37,7 +38,7 @@ public class OrderService {
 
     //FU7
     //update ticket status to occupied
-    boolean updateTicketStatus(Long eventId, Long ticketId, String TicketStatus) {
+    public boolean updateTicketStatus(Long eventId, Long ticketId, String TicketStatus) {
         final String uri = "http://localhooooost:8080/managment/{eventid}/{ticketid}";
         Map<String, String> params = new HashMap<String, String>();
         params.put("eventid", eventId.toString());
@@ -52,13 +53,13 @@ public class OrderService {
 
     //FU8 - showUserTickets
     //show all orders of specific user
-    Iterable<OrderObjcet> findUserOrders (Long userid) {
+    public Iterable<OrderObjcet> findUserOrders (Long userid) {
         return orderObjcetRepository.findByUserID(userid);
     }
 
     //FU9
     //MakeResignation
-    MakeResignationRES makeResignation (Long orderid) {
+    public MakeResignationRES makeResignation (Long orderid) {
         OrderObjcet orderObjcet=orderObjcetRepository.findById(orderid).orElse(null);
         for(  Booking b: orderObjcet.getBookings()) {
             //dla kazdego b trzeba wyslać UpdateTicketStatus
@@ -69,13 +70,13 @@ public class OrderService {
 
     //FU11
     //show all orders of specific event
-    List<Booking> findAllTicketsFromEvent (Long eventid) {
+    public List<Booking> findAllTicketsFromEvent (Long eventid) {
         return bookingRepository.findByEventID(eventid);
     }
 
     //FU11
     //cancel event and all tickets
-    boolean cancelTicketsForEvent (Long eventid) {
+    public boolean cancelTicketsForEvent (Long eventid) {
         List<Booking> bookingList = findAllTicketsFromEvent(eventid);
         if (bookingList != null) {
             //trzeba zaupdateować statusy biletów z mikroserv zarz wydarzeniami
@@ -88,14 +89,14 @@ public class OrderService {
     }
 
     //FU11
-    boolean updateTicketStatusForEvent(Long eventid) {
+    public boolean updateTicketStatusForEvent(Long eventid) {
         //tutaj trzeba zapytanie do mikroserwisu zarz wydarz by zminił stan biletow
         return true;
     }
 
 
     //test of consuming rest api
-    String tttest() {
+    public String tttest() {
         Logger log = LoggerFactory.getLogger(OrdersApplication.class);
         final String uri = "http://localhost:8080/orders/new_order2";
         OrderObjcet orderObjcet = new OrderObjcet((long)88,(long)45);
@@ -104,4 +105,39 @@ public class OrderService {
         log.info(resp.toString());
         return resp.toString();
     }
+
+
+    //its finally working
+    //rollback by default on RuntimeException class, i think not tested
+    @Transactional(rollbackFor = Exception.class)
+    public String testaddNewOrder(Long iduser, Long idevent, Long idticket) throws Exception {
+
+        OrderObjcet o = new OrderObjcet();
+        o.setUserID(iduser);
+        Booking b = new Booking();
+        b.setEventID(idevent);
+        b.setTicketID(idticket);
+        b.setRelationCreationDate(LocalDateTime.now());
+        b.setOrderObjcet(o);
+        o.getBookings().add(b);
+        orderObjcetRepository.save(o);
+        if(iduser==888) {
+            throw new Exception();
+            //throw new InvalidUserItemException("qwertyuiop"+o.getOrderID()+o.getUserID());
+            // return "Saved";
+        }
+        else {
+            OrderObjcet oo = new OrderObjcet();
+            oo.setUserID(iduser);
+            Booking bb = new Booking();
+            bb.setEventID(idevent);
+            bb.setTicketID(idticket);
+            bb.setRelationCreationDate(LocalDateTime.now());
+            bb.setOrderObjcet(oo);
+            oo.getBookings().add(bb);
+            orderObjcetRepository.save(oo);
+            return "Saved";
+        }
+    }
+
 }
