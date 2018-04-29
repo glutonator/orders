@@ -7,7 +7,7 @@ info:
     name: Filip Lewczak
   license:
     name: API License URL
-host: 'localhost:8080'
+host: 'localhost:8181'
 basePath: /
 tags:
   - name: main-controller
