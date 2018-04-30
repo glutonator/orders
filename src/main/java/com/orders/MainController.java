@@ -56,7 +56,7 @@ public class MainController {
     //cancel event and all tickets
     @RequestMapping(method = RequestMethod.GET, value = "/event/delete/{eventid}")
     public @ResponseBody
-    boolean cancelEvent(@PathVariable("eventid") Long eventid) {
+    StringRES cancelEvent(@PathVariable("eventid") Long eventid) {
         return orderService.cancelTicketsForEvent(eventid);
     }
 

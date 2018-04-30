@@ -17,6 +17,8 @@ public class OrderObjcet {
 
     private Long paymentOrder;
 
+    private boolean status; // 1 - reserved, 0 - canceled
+
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "orderObjcet")
@@ -37,6 +39,13 @@ public class OrderObjcet {
     public OrderObjcet(Long userID, Long paymentOrder, Set<Booking> bookings) {
         this.userID = userID;
         this.paymentOrder = paymentOrder;
+        this.bookings = bookings;
+    }
+
+    public OrderObjcet(Long userID, Long paymentOrder, boolean status, Set<Booking> bookings) {
+        this.userID = userID;
+        this.paymentOrder = paymentOrder;
+        this.status = status;
         this.bookings = bookings;
     }
 
@@ -72,12 +81,21 @@ public class OrderObjcet {
         this.bookings = bookings;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "OrderObjcet{" +
                 "orderID=" + orderID +
                 ", userID=" + userID +
                 ", paymentOrder=" + paymentOrder +
+                ", status=" + status +
                 ", bookings=" + bookings +
                 '}';
     }

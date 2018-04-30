@@ -79,13 +79,14 @@ private ApiInfo apiInfo() {
         // Create a Post
 		OrderObjcet post = new OrderObjcet((long)22);
 		post.setPaymentOrder(orderObjcetRepository.count()+10);
+		post.setStatus(true);
         //post.setUserID((long)22);
 		// Create two tags
         //LocalDateTime tempdate=LocalDateTime.of(2018,04,21,12,14,57);
-        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33),LocalDateTime.now(),true);
+        Booking comment1  = new Booking(Long.valueOf(44),Long.valueOf(33),LocalDateTime.now(),true);
 //        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
 		comment1.setOrderObjcet(post);
-        Booking comment2 = new Booking((long)45,(long)45,LocalDateTime.now(),true);
+        Booking comment2 = new Booking((long)44,(long)34,LocalDateTime.now(),true);
 //        Booking comment2 = new Booking((long)45,(long)45);
 
         comment2.setOrderObjcet(post);
@@ -104,7 +105,7 @@ private ApiInfo apiInfo() {
 
 
         OrderObjcet orderObjcet= orderObjcetRepository.findById((long)1).orElse(null);
-        Booking comment3 = new Booking((long)999,(long)999,LocalDateTime.now(),true);
+        Booking comment3 = new Booking((long)44,(long)999,LocalDateTime.now(),true);
         comment3.setOrderObjcet(orderObjcet);
         orderObjcet.getBookings().add(comment3);
         orderObjcetRepository.save(orderObjcet);

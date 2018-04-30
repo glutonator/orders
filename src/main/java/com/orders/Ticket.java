@@ -1,52 +1,41 @@
 package com.orders;
 
 public class Ticket {
-    private Long EventID;
 
-    private Long TicketID;
+    private Long id;
 
-    private String TicketStatus;
+    private String status; // AVAILABLE, OCCUPIED, CANCELED
+
 
     public Ticket() {
     }
 
-
-    public Ticket(Long eventID, Long ticketID, String ticketStatus) {
-        EventID = eventID;
-        TicketID = ticketID;
-        TicketStatus = ticketStatus;
+    public Ticket(Long id, String status) {
+        this.id = id;
+        this.status = status;
     }
 
-    public Long getEventID() {
-        return EventID;
+    public Long getId() {
+        return id;
     }
 
-    public void setEventID(Long eventID) {
-        EventID = eventID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getTicketID() {
-        return TicketID;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTicketID(Long ticketID) {
-        TicketID = ticketID;
-    }
-
-    public String getTicketStatus() {
-        return TicketStatus;
-    }
-
-    public void setTicketStatus(String ticketStatus) {
-        TicketStatus = ticketStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "Ticket{" +
-                "EventID=" + EventID +
-                ", TicketID=" + TicketID +
-                ", TicketStatus='" + TicketStatus + '\'' +
+                "id=" + id +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -29,6 +27,7 @@ public class OrderService {
             b.setRelationStatus(true);
         }
         orderObjcet.setPaymentOrder(orderObjcetRepository.count()+10);
+        orderObjcet.setStatus(true);
         orderObjcetRepository.save(orderObjcet);
         //update tickets status
         //for UpdateTicketStatus();
@@ -38,14 +37,15 @@ public class OrderService {
 
     //FU7
     //update ticket status to occupied
-    public boolean updateTicketStatus(Long eventId, Long ticketId, String TicketStatus) {
+    public boolean updateTicketStatus(Long ticketId, String TicketStatus) {
         final String uri = "http://localhooooost:8080/managment/{eventid}/{ticketid}";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("eventid", eventId.toString());
-        params.put("ticketid", ticketId.toString());
-        params.put("ticketStatus", TicketStatus);
+        //params.put("eventid", eventId.toString());
+        params.put("id", ticketId.toString());
+        params.put("status", TicketStatus);
+        Ticket ticketUpdate = new Ticket(ticketId,TicketStatus);
 
-        Ticket ticketUpdate = new Ticket(eventId,ticketId,TicketStatus);
+//        Ticket ticketUpdate = new Ticket(eventId,ticketId,TicketStatus);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.put(uri,ticketUpdate,params);
         return true;
@@ -76,16 +76,47 @@ public class OrderService {
 
     //FU11
     //cancel event and all tickets
-    public boolean cancelTicketsForEvent (Long eventid) {
+    @Transactional
+    public StringRES cancelTicketsForEvent (Long eventid) {
         List<Booking> bookingList = findAllTicketsFromEvent(eventid);
         if (bookingList != null) {
-            //trzeba zaupdateować statusy biletów z mikroserv zarz wydarzeniami
-            //UpdateTicketStatusForEvent(eventid);
-            return true;
+            //teraz trzeba zamienić statusy zamowien na niewazne i wyslac kase
+            LinkedList<Long> tmpPaymentOrderList=new LinkedList<>();
+            for(Booking b: bookingList) {
+                if(b.getOrderObjcet().isStatus()==true) {
+                    tmpPaymentOrderList.add(b.getOrderObjcet().getPaymentOrder());
+                    b.getOrderObjcet().setStatus(false);
+                    orderObjcetRepository.save(b.getOrderObjcet());
+                }
+                else {
+                    //nothing
+                }
+                b.setRelationStatus(false);
+                bookingRepository.save(b);
+            }
+            for(Long p: tmpPaymentOrderList) {
+                if(returnPayment(p)==true) {
+                    //nothing
+                }
+                else{
+                    try {
+                        throw new CancelTicketsForEventExeption();
+                    }
+                    catch (CancelTicketsForEventExeption e) {
+                        return new StringRES(false);
+                    }
+                }
+            }
+
         } else {
-            //no records in databese
-            return false;
+            //no records in database
         }
+        return new StringRES(true);
+    }
+
+    public boolean returnPayment(Long paymentOrder ) {
+        //connecting to external payment service
+        return false;
     }
 
     //FU11
