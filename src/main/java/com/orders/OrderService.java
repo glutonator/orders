@@ -37,18 +37,29 @@ public class OrderService {
 
     //FU7
     //update ticket status to occupied
-    public boolean updateTicketStatus(Long ticketId, String TicketStatus) {
-        final String uri = "http://localhooooost:8080/managment/{eventid}/{ticketid}";
-        Map<String, String> params = new HashMap<String, String>();
-        //params.put("eventid", eventId.toString());
-        params.put("id", ticketId.toString());
-        params.put("status", TicketStatus);
-        Ticket ticketUpdate = new Ticket(ticketId,TicketStatus);
+    public String updateTicketStatus(Long ticketId, String TicketStatus) {
 
-//        Ticket ticketUpdate = new Ticket(eventId,ticketId,TicketStatus);
+        Logger log = LoggerFactory.getLogger(OrdersApplication.class);
+        final String uri = "http://localhost:8080/tickets/updateTicketStatus";
+//        final String uri = "http://localhost:8080/tickets/updateTicketStatus?id=3&status=fdfd";
+        final String uri2 = uri + "?id="+ticketId+"&status="+TicketStatus;
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.put(uri,ticketUpdate,params);
-        return true;
+        StringRES resp=restTemplate.postForObject(uri2,null,StringRES.class);
+        log.info(resp.toString());
+        return resp.toString();
+
+
+//        final String uri = "http://localhost:8080/tickets/updateTicketStatus/{eventid}/{ticketid}";
+//        Map<String, String> params = new HashMap<String, String>();
+//        //params.put("eventid", eventId.toString());
+//        params.put("id", ticketId.toString());
+//        params.put("status", TicketStatus);
+//        Ticket ticketUpdate = new Ticket(ticketId,TicketStatus);
+//
+////        Ticket ticketUpdate = new Ticket(eventId,ticketId,TicketStatus);
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.put(uri,ticketUpdate,params);
+//        return true;
     }
 
     //FU8 - showUserTickets
@@ -59,12 +70,27 @@ public class OrderService {
 
     //FU9
     //MakeResignation
+    //ToDo create errors to rollback in case failure
+    @Transactional
     public MakeResignationRES makeResignation (Long orderid) {
         OrderObjcet orderObjcet=orderObjcetRepository.findById(orderid).orElse(null);
         for(  Booking b: orderObjcet.getBookings()) {
+            updateTicketStatus(b.getTicketID(),"CANCELED");
+            b.setRelationModificationDate(LocalDateTime.now());
+            b.setRelationStatus(false);
+            bookingRepository.save(b);
             //dla kazdego b trzeba wyslać UpdateTicketStatus
         }
-        return new MakeResignationRES(true,orderid, orderObjcet.getPaymentOrder());
+        orderObjcet.setStatus(false);
+        orderObjcetRepository.save(orderObjcet);
+        if(returnPayment(orderObjcet.getPaymentOrder())==true) {
+            return new MakeResignationRES(true,orderid, orderObjcet.getPaymentOrder(),orderObjcet.getUserID());
+        }
+        else {
+            // payment fained, needed rollback
+            return new MakeResignationRES(false,orderid, orderObjcet.getPaymentOrder(),orderObjcet.getUserID());
+
+        }
     }
 
 

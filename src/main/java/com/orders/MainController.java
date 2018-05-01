@@ -89,7 +89,8 @@ public class MainController {
     @RequestMapping(method = RequestMethod.GET, value = "/{order}")
     public @ResponseBody
     OrderObjcet getOrderDetails(@PathVariable("order") Long idorder) {
-        orderService.tttest();
+        //orderService.updateTicketStatus((long)45,"ppppp");
+        //orderService.tttest();
         return orderObjcetRepository.findById(idorder).orElse(null);
     }
 

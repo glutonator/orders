@@ -4,6 +4,7 @@ public class MakeResignationRES {
     private boolean status;
     private Long orderID;
     private Long paymentOrder;
+    private Long userID;
 
     public MakeResignationRES() {
     }
@@ -12,6 +13,13 @@ public class MakeResignationRES {
         this.status = status;
         this.orderID = orderID;
         this.paymentOrder = paymentOrder;
+    }
+
+    public MakeResignationRES(boolean status, Long orderID, Long paymentOrder, Long userID) {
+        this.status = status;
+        this.orderID = orderID;
+        this.paymentOrder = paymentOrder;
+        this.userID = userID;
     }
 
     public boolean isStatus() {
@@ -38,12 +46,21 @@ public class MakeResignationRES {
         this.paymentOrder = paymentOrder;
     }
 
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
+
     @Override
     public String toString() {
         return "MakeResignationRES{" +
                 "status=" + status +
                 ", orderID=" + orderID +
                 ", paymentOrder=" + paymentOrder +
+                ", userID=" + userID +
                 '}';
     }
 }
