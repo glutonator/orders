@@ -11,7 +11,7 @@
             "name": "API License URL"
         }
     },
-    "host": "localhost:8181",
+    "host": "localhost",
     "basePath": "/",
     "tags": [
         {
@@ -79,7 +79,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "boolean"
+                            "$ref": "#/definitions/StringRES"
                         }
                     },
                     "401": {
@@ -436,6 +436,10 @@
                 },
                 "status": {
                     "type": "boolean"
+                },
+                "userID": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -456,9 +460,20 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "status": {
+                    "type": "boolean"
+                },
                 "userID": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "StringRES": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
                 }
             }
         }
