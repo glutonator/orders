@@ -29,8 +29,10 @@ public class OrderService {
         orderObjcet.setPaymentOrder(orderObjcetRepository.count()+10);
         orderObjcet.setStatus(true);
         orderObjcetRepository.save(orderObjcet);
-        //update tickets status
-        //for UpdateTicketStatus();
+        //todo: zrobic wyjatek jak sie nie uda polaczyc i takie tam
+        for(Booking b : orderObjcet.getBookings()) {
+            updateTicketStatus(b.getTicketID(),"OCCUPIED");
+        }
         //response if saving is successful
         return new CreateNewRelationsRES(true,orderObjcet.getOrderID());
     }
