@@ -38,7 +38,7 @@ public class MainController {
 
     //FU9
     //MakeResignation
-    @RequestMapping(method = RequestMethod.PUT, value = "/resignation/{orderid}")
+    @RequestMapping(method = RequestMethod.POST, value = "/resignation/{orderid}")
     public @ResponseBody
     MakeResignationRES makeResignation(@PathVariable("orderid") Long orderid) {
         return orderService.makeResignation(orderid);

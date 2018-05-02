@@ -3,6 +3,7 @@ package com.orders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -42,11 +43,16 @@ public class OrderService {
     public String updateTicketStatus(Long ticketId, String TicketStatus) {
 
         Logger log = LoggerFactory.getLogger(OrdersApplication.class);
-        final String uri = "http://localhost:8080/tickets/updateTicketStatus";
-//        final String uri = "http://localhost:8080/tickets/updateTicketStatus?id=3&status=fdfd";
-        final String uri2 = uri + "?id="+ticketId+"&status="+TicketStatus;
+//        final String uri = "http://localhost:8080/tickets/updateTicketStatus";
+////        final String uri = "http://localhost:8080/tickets/updateTicketStatus?id=3&status=fdfd";
+//        final String uri2 = uri + "?id="+ticketId+"&status="+TicketStatus;
+        final String uri = "http://et-microservice.westeurope.cloudapp.azure.com:8181/tickets/";
+//        final String uri = "http://localhost:8080/tickets/";
+        final String uri2 = uri +ticketId+"/status/"+TicketStatus;
+
         RestTemplate restTemplate = new RestTemplate();
-        StringRES resp=restTemplate.postForObject(uri2,null,StringRES.class);
+       StringRES resp=restTemplate.postForObject(uri2,null,StringRES.class);
+
         log.info(resp.toString());
         return resp.toString();
 
