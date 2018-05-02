@@ -247,12 +247,12 @@
             }
         },
         "/orders/resignation/{orderid}": {
-            "put": {
+            "post": {
                 "tags": [
                     "main-controller"
                 ],
                 "summary": "makeResignation",
-                "operationId": "makeResignationUsingPUT",
+                "operationId": "makeResignationUsingPOST",
                 "consumes": [
                     "application/json"
                 ],
