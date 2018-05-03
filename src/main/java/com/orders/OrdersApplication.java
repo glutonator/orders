@@ -13,18 +13,25 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.servlet.*;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
 @EnableSwagger2
 @SpringBootApplication
-public class OrdersApplication implements CommandLineRunner {
+public class OrdersApplication implements CommandLineRunner, Filter {
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -49,8 +56,7 @@ public class OrdersApplication implements CommandLineRunner {
                 .paths(regex("/orders.*"))
                 .build()
                 .apiInfo(apiInfo());
-    }
-//    private ApiInfo apiInfo() {
+        //    private ApiInfo apiInfo() {
 //        return new ApiInfo(
 //                "My REST API",
 //                "Some custom description of API.",
@@ -59,6 +65,8 @@ public class OrdersApplication implements CommandLineRunner {
 //                new Contact("John Doe", "www.example.com", "myeaddress@company.com"),
 //                "License of API", "API license URL", Collections.emptyList());
 //    }
+    }
+
 private ApiInfo apiInfo() {
     ApiInfo apiInfo = new ApiInfo(
             "Mikroserwis zarządzania udziałem w wydarzeniach - REST API",
@@ -137,6 +145,34 @@ private ApiInfo apiInfo() {
 
 
         // =======================================
+
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response =  (HttpServletResponse) res;
+
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+
+//        response.setHeader("Acess-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+
+
+        chain.doFilter(req, res);
+
+    }
+
+    @Override
+    public void destroy() {
 
     }
 }
