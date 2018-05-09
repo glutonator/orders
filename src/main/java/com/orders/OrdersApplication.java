@@ -158,8 +158,8 @@ private ApiInfo apiInfo() {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response =  (HttpServletResponse) res;
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
 //        response.setHeader("Acess-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
