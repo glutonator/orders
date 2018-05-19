@@ -2,7 +2,9 @@ package com.orders;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -22,7 +24,8 @@ public class OrderObjcet {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "orderObjcet")
-    private Set<Booking> bookings = new HashSet<>();
+//    private Set<Booking> bookings = new HashSet<>();
+    private List<Booking> bookings = new ArrayList<>();
 
     public OrderObjcet() {
     }
@@ -36,13 +39,27 @@ public class OrderObjcet {
         this.paymentOrder = paymentOrder;
     }
 
-    public OrderObjcet(Long userID, Long paymentOrder, Set<Booking> bookings) {
+//    public OrderObjcet(Long userID, Long paymentOrder, Set<Booking> bookings) {
+//        this.userID = userID;
+//        this.paymentOrder = paymentOrder;
+//        this.bookings = bookings;
+//    }
+
+    public OrderObjcet(Long userID, Long paymentOrder, List<Booking> bookings) {
         this.userID = userID;
         this.paymentOrder = paymentOrder;
         this.bookings = bookings;
     }
 
-    public OrderObjcet(Long userID, Long paymentOrder, boolean status, Set<Booking> bookings) {
+
+//    public OrderObjcet(Long userID, Long paymentOrder, boolean status, Set<Booking> bookings) {
+//        this.userID = userID;
+//        this.paymentOrder = paymentOrder;
+//        this.status = status;
+//        this.bookings = bookings;
+//    }
+
+    public OrderObjcet(Long userID, Long paymentOrder, boolean status, List<Booking> bookings) {
         this.userID = userID;
         this.paymentOrder = paymentOrder;
         this.status = status;
@@ -73,11 +90,20 @@ public class OrderObjcet {
         this.paymentOrder = paymentOrder;
     }
 
-    public Set<Booking> getBookings() {
+//    public Set<Booking> getBookings() {
+//        return bookings;
+//    }
+//
+//    public void setBookings(Set<Booking> bookings) {
+//        this.bookings = bookings;
+//    }
+
+
+    public List<Booking> getBookings() {
         return bookings;
     }
 
-    public void setBookings(Set<Booking> bookings) {
+    public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
 

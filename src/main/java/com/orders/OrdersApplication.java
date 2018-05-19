@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -38,6 +39,7 @@ public class OrdersApplication implements CommandLineRunner, Filter {
 
     @Autowired
     private OrderObjcetRepository orderObjcetRepository;
+
 
 	@PersistenceContext
 	private EntityManager em;
@@ -83,6 +85,9 @@ private ApiInfo apiInfo() {
     public void run(String... args) throws Exception {
 
         // =======================================
+
+
+        //
 
         // Create a Post
 		OrderObjcet post = new OrderObjcet((long)22);
@@ -165,7 +170,11 @@ private ApiInfo apiInfo() {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
 //        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+//        response.setContentType("text/plain;charset=UTF-8");
+//        String dadsa = request.getContentType().toString();
 
+//        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+//        response.setCharacterEncoding("UTF-8");
 
         chain.doFilter(req, res);
 

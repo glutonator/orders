@@ -1,12 +1,16 @@
 package com.orders;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller    // This means that this class is a Controller
+//,produces = "text/plain;charset=UTF-8"
+//consumes = MediaType.TEXT_PLAIN_VALUE
+//APPLICATION_FORM_URLENCODED_VALUE
 @RequestMapping(path = "/orders/") // This means URL's start with /demo (after Application path)
 public class MainController {
     @Autowired
@@ -17,14 +21,20 @@ public class MainController {
     @Autowired
     private BookingRepository bookingRepository;
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
     //FU7
     // create new order/ CreateNewRelations / in orderobject specified eventid and ticketid
-    @RequestMapping(method = RequestMethod.POST, value = "/new_order")
+    //,produces = MediaType.TEXT_PLAIN_VALUE
+    @RequestMapping(method = RequestMethod.POST, value = "/new_order",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    CreateNewRelationsRES createNewRelations(@RequestBody OrderObjcet orderObjcet) {
+    CreateNewRelationsRES createNewRelations(OrderObjcet orderObjcet) {
+        //RequestBody
         return orderService.createRelations(orderObjcet);
     }
 
@@ -38,7 +48,9 @@ public class MainController {
 
     //FU9
     //MakeResignation
-    @RequestMapping(method = RequestMethod.POST, value = "/resignation/{orderid}")
+    @RequestMapping(method = RequestMethod.POST, value = "/resignation/{orderid}",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     MakeResignationRES makeResignation(@PathVariable("orderid") Long orderid) {
         return orderService.makeResignation(orderid);
@@ -95,7 +107,9 @@ public class MainController {
     }
 
     // create order with specific iduser,idevent,idticket
-    @RequestMapping(method = RequestMethod.POST, value = "/new_order_old")
+    @RequestMapping(method = RequestMethod.POST, value = "/new_order_old",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String addNewOrder(@RequestParam Long iduser, @RequestParam Long idevent, @RequestParam Long idticket) {
         try {
