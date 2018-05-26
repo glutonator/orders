@@ -35,17 +35,21 @@ public class MainController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    CreateNewRelationsRES createNewRelations(OrderObjcet orderObjcet) {
+    JsonErrorResponses createNewRelations(OrderObjcet orderObjcet,HttpServletRequest httpServletRequest) {
         //RequestBody
-        return orderService.createRelations(orderObjcet);
+        String userIdTokenStr = httpServletRequest.getAttribute("userId").toString();
+        Long userIdToken =Long.parseLong(userIdTokenStr);
+        return orderService.createRelations(orderObjcet,userIdToken);
     }
 
     //FU8
     //show all orders of specific user
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userid}")
     public @ResponseBody
-    Iterable<OrderObjcet> showUserTickets(@PathVariable("userid") Long userid) {
-        return orderService.findUserOrders(userid);
+    JsonErrorResponses showUserTickets(@PathVariable("userid") Long userid,HttpServletRequest httpServletRequest) {
+        String userIdTokenStr = httpServletRequest.getAttribute("userId").toString();
+        Long userIdToken =Long.parseLong(userIdTokenStr);
+        return orderService.findUserOrders(userid,userIdToken);
     }
 
     //FU9
@@ -54,16 +58,26 @@ public class MainController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    MakeResignationRES makeResignation(@PathVariable("orderid") Long orderid) {
-        return orderService.makeResignation(orderid);
+    JsonErrorResponses makeResignation(@PathVariable("orderid") Long orderid,HttpServletRequest httpServletRequest) {
+        String userIdTokenStr = httpServletRequest.getAttribute("userId").toString();
+        Long userIdToken =Long.parseLong(userIdTokenStr);
+        return orderService.makeResignation(orderid,userIdToken);
     }
 
     //FU11
     //show all orders of specific event
     @RequestMapping(method = RequestMethod.GET, value = "/event/{eventid}")
     public @ResponseBody
-    List<Booking> showAllTicketsFromEvent(@PathVariable("eventid") Long eventid) {
-        return orderService.findAllTicketsFromEvent(eventid);
+    JsonErrorResponses showAllTicketsFromEvent(@PathVariable("eventid") Long eventid,HttpServletRequest httpServletRequest) {
+        String permissionIdTokenStr = httpServletRequest.getAttribute("permissionId").toString();
+        boolean permissionIdToken =Boolean.parseBoolean(permissionIdTokenStr);
+        if(permissionIdToken==true) {
+            return orderService.findAllTicketsFromEvent(eventid);
+        }
+        else {
+            return new JsonErrorResponses(200, null, false, new Error(207, "fail", "Permission denied, you are not admin"));
+
+        }
     }
 
     //FU11
@@ -160,6 +174,7 @@ public class MainController {
     public @ResponseBody
     Iterable<OrderObjcet> getAllOrders(HttpServletRequest httpServletRequest) {
 //        Date dsdsds = (Date)httpServletRequest.getAttribute("expirationDate");
+
         return orderObjcetRepository.findAll();
     }
 

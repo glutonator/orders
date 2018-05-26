@@ -162,43 +162,62 @@ public class OrdersApplication implements CommandLineRunner, Filter {
 
         //authorization
         final String authHeader = request.getHeader("authorization");
-        final String token = authHeader.substring(7);
-        final String token2[] = token.split("\\.");
-        final String message = token2[1];
+        String pathToRequest = request.getServletPath();
+
+        //To Asia microsevice
+        if (pathToRequest.startsWith("/orders/event/delete/")==true) {
+            chain.doFilter(req, res);
+        }
+        else {
+            if (authHeader == null) {
+                pathToRequest = request.getServletPath();
+                if (pathToRequest.equals("/orders/error")) {
+                    chain.doFilter(req, res);
+                } else {
+                    response.sendRedirect("/orders/error");
+                }
+            } else {
+
+
+                final String token = authHeader.substring(7);
+                final String token2[] = token.split("\\.");
+                final String message = token2[1];
 //        final String signature =token2[1];
 //        String payload = TextCodec.BASE64URL.decodeToString(message);
+                final Claims claims;
 
+                final String secretKey = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb3" +
+                        "37591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
 
-        final String secretKey = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb3" +
-                "37591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
+                try {
+                    claims = Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(token).getBody();
+                    request.setAttribute("expirationDate", claims.get("expirationDate"));
+                    request.setAttribute("permissionId", claims.get("permissionId"));
+                    request.setAttribute("userId", claims.get("userId"));
+                } catch (final io.jsonwebtoken.SignatureException e) {
+                    throw new ServletException("Invalid token");
+                }
+                String string = (String) claims.get("expirationDate");
+//        String string = "2018-05-27T06:27:32.3969133+02:00";
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZZ").withLocale(Locale.ROOT);
+                DateTime dt = formatter.parseDateTime(string);
+                DateTime localDateTime = DateTime.now(DateTimeZone.forID("Poland"));
 
-        try {
-            final Claims claims = Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(token).getBody();
-            request.setAttribute("expirationDate", claims.get("expirationDate"));
-            request.setAttribute("permissionId", claims.get("permissionId"));
-            request.setAttribute("userId", claims.get("userId"));
-        } catch (final io.jsonwebtoken.SignatureException e) {
-            throw new ServletException("Invalid token");
-        }
+                // valid token expirationDate
+                pathToRequest = request.getServletPath();
+                if (pathToRequest.equals("/orders/error")) {
 
-        String string = "2018-05-27T06:27:32.3969133+02:00";
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZZ").withLocale(Locale.ROOT);
-        DateTime dt = formatter.parseDateTime(string);
-        DateTime localDateTime = DateTime.now(DateTimeZone.forID("Poland"));
+                    chain.doFilter(req, res);
+                } else {
+                    if (localDateTime.isBefore(dt)) {
+                        System.out.print("iffffffffffffff");
+                        chain.doFilter(req, res);
 
-        // valid token expirationDate
-        String pathToRequest = request.getServletPath();
-        if (pathToRequest.equals("/orders/error")) {
-
-            chain.doFilter(req, res);
-        } else {
-            if (localDateTime.isBefore(dt)) {
-                System.out.print("iffffffffffffff");
-                chain.doFilter(req, res);
-
-            } else {
-                System.out.print("Elsssseeeeeeee");
-                response.sendRedirect("/orders/error");
+                    } else {
+                        System.out.print("Elsssseeeeeeee");
+                        response.sendRedirect("/orders/error");
+                    }
+                }
             }
         }
 
