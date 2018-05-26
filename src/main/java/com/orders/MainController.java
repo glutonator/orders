@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Controller    // This means that this class is a Controller
@@ -70,6 +72,13 @@ public class MainController {
     public @ResponseBody
     StringRES cancelEvent(@PathVariable("eventid") Long eventid) {
         return orderService.cancelTicketsForEvent(eventid);
+    }
+
+    //token not valid
+    @RequestMapping(method = RequestMethod.GET, value = "/error")
+    public @ResponseBody
+    StringRES tokenValidationFail() {
+        return orderService.tokenValidationFail();
     }
 
 
@@ -149,7 +158,8 @@ public class MainController {
     // get all orders
     @RequestMapping(method = RequestMethod.GET, value = "/all_orders")
     public @ResponseBody
-    Iterable<OrderObjcet> getAllOrders() {
+    Iterable<OrderObjcet> getAllOrders(HttpServletRequest httpServletRequest) {
+//        Date dsdsds = (Date)httpServletRequest.getAttribute("expirationDate");
         return orderObjcetRepository.findAll();
     }
 

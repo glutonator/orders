@@ -132,14 +132,14 @@ public class OrderService {
                 if(returnPayment(p)==true) {
                     //nothing
                 }
-                else{
-                    try {
-                        throw new CancelTicketsForEventExeption();
-                    }
-                    catch (CancelTicketsForEventExeption e) {
-                        return new StringRES(false);
-                    }
-                }
+//                else{
+//                    try {
+//                        throw new CancelTicketsForEventExeption();
+//                    }
+//                    catch (CancelTicketsForEventExeption e) {
+//                        return new StringRES(false);
+//                    }
+//                }
             }
 
         } else {
@@ -150,7 +150,7 @@ public class OrderService {
 
     public boolean returnPayment(Long paymentOrder ) {
         //connecting to external payment service
-        return false;
+        return true;
     }
 
     //FU11
@@ -203,6 +203,11 @@ public class OrderService {
             orderObjcetRepository.save(oo);
             return "Saved";
         }
+    }
+
+    //return json with fail message
+    public StringRES tokenValidationFail() {
+        return new StringRES(false);
     }
 
 }
