@@ -70,7 +70,9 @@ public class MainController {
     public @ResponseBody
     JsonErrorResponses showAllTicketsFromEvent(@PathVariable("eventid") Long eventid,HttpServletRequest httpServletRequest) {
         String permissionIdTokenStr = httpServletRequest.getAttribute("permissionId").toString();
-        boolean permissionIdToken =Boolean.parseBoolean(permissionIdTokenStr);
+//        boolean permissionIdToken =Boolean.parseBoolean(permissionIdTokenStr);
+        boolean permissionIdToken="1".equals(permissionIdTokenStr);
+
         if(permissionIdToken==true) {
             return orderService.findAllTicketsFromEvent(eventid);
         }
@@ -89,10 +91,10 @@ public class MainController {
     }
 
     //token not valid
-    @RequestMapping(method = RequestMethod.GET, value = "/error")
+    @RequestMapping(method = RequestMethod.GET, value = "/error/{errornr}")
     public @ResponseBody
-    StringRES tokenValidationFail() {
-        return orderService.tokenValidationFail();
+    JsonErrorResponses tokenValidationFail(@PathVariable("errornr") int errornr) {
+        return orderService.tokenValidationFail(errornr);
     }
 
 
@@ -172,10 +174,22 @@ public class MainController {
     // get all orders
     @RequestMapping(method = RequestMethod.GET, value = "/all_orders")
     public @ResponseBody
-    Iterable<OrderObjcet> getAllOrders(HttpServletRequest httpServletRequest) {
-//        Date dsdsds = (Date)httpServletRequest.getAttribute("expirationDate");
+    JsonErrorResponses getAllOrders(HttpServletRequest httpServletRequest) {
+//        String dsdsds = (Date)httpServletRequest.getAttribute("expirationDate");
 
-        return orderObjcetRepository.findAll();
+        String permissionIdTokenStr = httpServletRequest.getAttribute("permissionId").toString();
+        //boolean permissionIdToken =Boolean.parseBoolean(permissionIdTokenStr);
+        boolean permissionIdToken="1".equals(permissionIdTokenStr);
+        if(permissionIdToken==true) {
+//            return orderService.findAllTicketsFromEvent(eventid);
+            return new JsonErrorResponses(200, orderObjcetRepository.findAll(), true, new Error(200, "success", "everything is fine, action finished properly"));
+        }
+        else {
+           return new JsonErrorResponses(200, null, false, new Error(207, "fail", "Permission denied, you are not admin"));
+
+        }
+
+//        return orderObjcetRepository.findAll();
     }
 
 }

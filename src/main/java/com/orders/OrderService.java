@@ -36,25 +36,32 @@ public class OrderService {
             orderObjcet.setStatus(true);
 //            orderObjcetRepository.save(orderObjcet);
             for (Booking b : orderObjcet.getBookings()) {
-                int statusTemp = updateTicketStatus(b.getTicketID(), "OCCUPIED");
+//                int statusTemp = updateTicketStatus(b.getTicketID(), "OCCUPIED");
+                JsonErrorResponses statusTemp = updateTicketStatus(b.getTicketID(), "OCCUPIED");
+                if (statusTemp.getMessageContainer().getCode() != 100) {
+                    return statusTemp;
+                }
 //                if(statusTemp==0) {
 //                    return new JsonErrorResponses(200,orderObjcet,true,new Error(200,"success","everything is fine, action finished properly"));
 //                }
                 //bad connection
-                if (statusTemp == 1) {
-                    return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
-
-                }
+//                if (statusTemp == 1) {
+//                    return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
+//
+//                }
 
                 //tickets not found
                 //statusTemp==2
-                else if (statusTemp == 2) {
-                    return new JsonErrorResponses(200, null, false, new Error(205, "fail", "Tickets not found"));
-                }
+//                else if (statusTemp == 2) {
+//                    return new JsonErrorResponses(200, null, false, new Error(205, "fail", "Tickets not found"));
+//                }
             }
-            orderObjcetRepository.save(orderObjcet);
-
-            return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
+            if (makePayment(orderObjcet) == true) {
+                orderObjcetRepository.save(orderObjcet);
+                return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
+            } else {
+                return new JsonErrorResponses(200, null, false, new Error(208, "fail", "payment not succeed"));
+            }
 
 
             ////////////
@@ -83,8 +90,9 @@ public class OrderService {
     //FU7
     //update ticket status to occupied
     //0-success 1-bad connection 2-ticket not found
-    public int updateTicketStatus(Long ticketId, String TicketStatus) {
-
+    public JsonErrorResponses updateTicketStatus(Long ticketId, String TicketStatus) {
+        //todo: obsluzyc wszystkie dziwne przyapdki od asi i potem je dobrze rzutowac - asia zwraca tego duzego jsona
+        //todo: trzeba to trochę przerobic bo teraz jest w oparciu o true albo false statusu
         Logger log = LoggerFactory.getLogger(OrdersApplication.class);
 //        final String uri = "http://localhost:8080/tickets/updateTicketStatus";
 ////        final String uri = "http://localhost:8080/tickets/updateTicketStatus?id=3&status=fdfd";
@@ -94,21 +102,26 @@ public class OrderService {
         final String uri2 = uri + "?ticketid=" + ticketId + "&status=" + TicketStatus;
 
         RestTemplate restTemplate = new RestTemplate();
-        StringRES resp = null;
+        JsonErrorResponses resp = null;
         try {
-            resp = restTemplate.postForObject(uri2, null, StringRES.class);
+            resp = restTemplate.postForObject(uri2, null, JsonErrorResponses.class);
         } catch (RestClientException e) {
-            return 1;
+            return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
+
+//            return 1;
         }
         log.info(resp.toString());
 //        return resp.toString();
-        if (resp.getStatus() == true) {
-            return 0;
-        }
-        //ticket not found
-        else {
-            return 2;
-        }
+
+        return resp;
+//
+//        if (resp.getStatus() == true) {
+//            return 0;
+//        }
+//        //ticket not found
+//        else {
+//            return 2;
+//        }
 
 
 //        final String uri = "http://localhost:8080/tickets/updateTicketStatus/{eventid}/{ticketid}";
@@ -158,18 +171,22 @@ public class OrderService {
             } else {
 
                 for (Booking b : orderObjcet.getBookings()) {
-                    int statusTemp = updateTicketStatus(b.getTicketID(), "CANCELED");
-                    statusTemp=0;
-                    if (statusTemp == 1) {
-                        return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
-
+//                    int statusTemp = updateTicketStatus(b.getTicketID(), "AVAILABLE");
+                    JsonErrorResponses statusTemp = updateTicketStatus(b.getTicketID(), "AVAILABLE");
+                    if (statusTemp.getMessageContainer().getCode() != 100) {
+                        return statusTemp;
                     }
-
-                    //tickets not found
-                    //statusTemp==2
-                    else if (statusTemp == 2) {
-                        return new JsonErrorResponses(200, null, false, new Error(205, "fail", "Tickets not found"));
-                    }
+//                    statusTemp=0;
+//                    if (statusTemp == 1) {
+//                        return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
+//
+//                    }
+//
+//                    //tickets not found
+//                    //statusTemp==2
+//                    else if (statusTemp == 2) {
+//                        return new JsonErrorResponses(200, null, false, new Error(205, "fail", "Tickets not found"));
+//                    }
 
 
                     b.setRelationModificationDate(LocalDateTime.now());
@@ -178,9 +195,13 @@ public class OrderService {
                     //dla kazdego b trzeba wyslać UpdateTicketStatus
                 }
                 orderObjcet.setStatus(false);
-                orderObjcetRepository.save(orderObjcet);
+                if (returnPayment(orderObjcet.getPaymentOrder()) == true) {
+                    orderObjcetRepository.save(orderObjcet);
+                    return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
+                } else {
+                    return new JsonErrorResponses(200, null, false, new Error(209, "fail", "return payment not succeed"));
+                }
 
-                return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
             }
         }
 
@@ -198,7 +219,7 @@ public class OrderService {
     //FU11
     //show all orders of specific event
     public JsonErrorResponses findAllTicketsFromEvent(Long eventid) {
-        List<Booking>  bookingList= bookingRepository.findByEventID(eventid);
+        List<Booking> bookingList = bookingRepository.findByEventID(eventid);
         return new JsonErrorResponses(200, bookingList, true, new Error(200, "success", "everything is fine, action finished properly"));
 
     }
@@ -213,6 +234,9 @@ public class OrderService {
             LinkedList<Long> tmpPaymentOrderList = new LinkedList<>();
             for (Booking b : bookingList) {
                 if (b.getOrderObjcet().isStatus() == true) {
+                    //todo: tutaj trzeba to obsluzyc
+//                    int statusTemp = updateTicketStatus(b.getTicketID(), "CANCELED");
+
                     tmpPaymentOrderList.add(b.getOrderObjcet().getPaymentOrder());
                     b.getOrderObjcet().setStatus(false);
                     orderObjcetRepository.save(b.getOrderObjcet());
@@ -225,6 +249,8 @@ public class OrderService {
             for (Long p : tmpPaymentOrderList) {
                 if (returnPayment(p) == true) {
                     //nothing
+                } else {
+                    return new StringRES(false);
                 }
 //                else{
 //                    try {
@@ -242,16 +268,21 @@ public class OrderService {
         return new StringRES(true);
     }
 
+    public boolean makePayment(OrderObjcet orderObjcet) {
+        //connecting to external payment service
+        return true;
+    }
+
     public boolean returnPayment(Long paymentOrder) {
         //connecting to external payment service
         return true;
     }
 
-    //FU11
-    public boolean updateTicketStatusForEvent(Long eventid) {
-        //tutaj trzeba zapytanie do mikroserwisu zarz wydarz by zminił stan biletow
-        return true;
-    }
+//    //FU11
+//    public boolean updateTicketStatusForEvent(Long eventid) {
+//        //tutaj trzeba zapytanie do mikroserwisu zarz wydarz by zminił stan biletow
+//        return true;
+//    }
 
 
     //test of consuming rest api
@@ -299,8 +330,20 @@ public class OrderService {
     }
 
     //return json with fail message
-    public StringRES tokenValidationFail() {
-        return new StringRES(false);
+    public JsonErrorResponses tokenValidationFail(int errornr) {
+
+        //1 - expired
+        if(errornr==1) {
+            return new JsonErrorResponses(200, null, false, new Error(201, "fail", "token expired"));
+
+        }
+        //2 - notvalid
+        else if (errornr==2){
+            return new JsonErrorResponses(200, null, false, new Error(202, "fail", "token not valid"));
+        }
+
+        return new JsonErrorResponses(200, null, false, new Error(202, "fail", "token not valid"));
+//        return new StringRES(false);
     }
 
 }
