@@ -1,55 +1,57 @@
 package com.orders;
 
 public class Error {
-    private int Code ;
-    private String Message ;
-    private String Details ;
-    private String Url ;
+    public int code ;
+    public String message ;
+    public String details ;
+    public String url ;
 
+    public Error() {
+    }
 
     public Error(int code, String message, String details) {
-        Code = code;
-        Message = message;
-        Details = details;
-        Url = "test_url";
+        this.code = code;
+        this.message = message;
+        this.details = details;
+        this.url = "test_url";
     }
 
     public Error(int code, String message, String details, String url) {
-        Code = code;
-        Message = message;
-        Details = details;
-        Url = url;
+        this.code = code;
+        this.message = message;
+        this.details = details;
+        this.url = url;
     }
 
     public int getCode() {
-        return Code;
+        return code;
     }
 
     public void setCode(int code) {
-        Code = code;
+        this.code = code;
     }
 
     public String getMessage() {
-        return Message;
+        return message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        this.message = message;
     }
 
     public String getDetails() {
-        return Details;
+        return details;
     }
 
     public void setDetails(String details) {
-        Details = details;
+        this.details = details;
     }
 
     public String getUrl() {
-        return Url;
+        return url;
     }
 
     public void setUrl(String url) {
-        Url = url;
+        this.url = url;
     }
 }

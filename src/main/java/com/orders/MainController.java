@@ -77,7 +77,7 @@ public class MainController {
             return orderService.findAllTicketsFromEvent(eventid);
         }
         else {
-            return new JsonErrorResponses(200, null, false, new Error(207, "fail", "Permission denied, you are not admin"));
+            return new JsonErrorResponses(200, "", false, new Error(207, "fail", "Permission denied, you are not admin"));
 
         }
     }
@@ -185,7 +185,7 @@ public class MainController {
             return new JsonErrorResponses(200, orderObjcetRepository.findAll(), true, new Error(200, "success", "everything is fine, action finished properly"));
         }
         else {
-           return new JsonErrorResponses(200, null, false, new Error(207, "fail", "Permission denied, you are not admin"));
+           return new JsonErrorResponses(200, "", false, new Error(207, "fail", "Permission denied, you are not admin"));
 
         }
 

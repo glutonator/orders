@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class OrderService {
             for (Booking b : orderObjcet.getBookings()) {
 //                int statusTemp = updateTicketStatus(b.getTicketID(), "OCCUPIED");
                 JsonErrorResponses statusTemp = updateTicketStatus(b.getTicketID(), "OCCUPIED");
-                if (statusTemp.getMessageContainer().getCode() != 100) {
+                if (statusTemp.getErrorContainer().getCode() != 100) {
                     return statusTemp;
                 }
 //                if(statusTemp==0) {
@@ -60,7 +61,7 @@ public class OrderService {
                 orderObjcetRepository.save(orderObjcet);
                 return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
             } else {
-                return new JsonErrorResponses(200, null, false, new Error(208, "fail", "payment not succeed"));
+                return new JsonErrorResponses(400, "", false, new Error(208, "fail", "payment not succeed"));
             }
 
 
@@ -80,7 +81,7 @@ public class OrderService {
 //            return new JsonErrorResponses(200,orderObjcet,true,new Error(200,"success","everything is fine, action finished properly"));
 //            return jsonErrorResponses;
         } else {
-            return new JsonErrorResponses(200, null, false, new Error(203, "fail", "Token belong to different user"));
+            return new JsonErrorResponses(400, "", false, new Error(203, "fail", "Token belong to different user"));
 
 //            return new CreateNewRelationsRES(false,orderObjcet.getOrderID());
         }
@@ -103,11 +104,24 @@ public class OrderService {
 
         RestTemplate restTemplate = new RestTemplate();
         JsonErrorResponses resp = null;
+        String resp2;
+        String []temp;
         try {
+//            resp2 = restTemplate.postForObject(uri2, null, String.class);
+//            temp = resp2.split("\\{");
+//            temp[1] = "{"+temp[1]+"null}";
+//
+//            ObjectMapper mapper = new ObjectMapper();
+//            try {
+//                JsonErrorResponses map = mapper.readValue(temp[1], JsonErrorResponses.class);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+//            JsonErrorResponses ppp = (JsonErrorResponses) resp2;
             resp = restTemplate.postForObject(uri2, null, JsonErrorResponses.class);
         } catch (RestClientException e) {
-            return new JsonErrorResponses(200, null, false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
-
+            return new JsonErrorResponses(400, "", false, new Error(204, "fail ", "connection to Tickets Microservice refused"));
 //            return 1;
         }
         log.info(resp.toString());
@@ -147,7 +161,7 @@ public class OrderService {
             return new JsonErrorResponses(200, orderObjcets, true, new Error(200, "success", "everything is fine, action finished properly"));
 
         } else {
-            return new JsonErrorResponses(200, null, false, new Error(203, "fail", "Token belong to different user"));
+            return new JsonErrorResponses(400, "", false, new Error(203, "fail", "Token belong to different user"));
 
         }
 
@@ -161,19 +175,19 @@ public class OrderService {
     public JsonErrorResponses makeResignation(Long orderid, Long userIdToken) {
         OrderObjcet orderObjcet = orderObjcetRepository.findById(orderid).orElse(null);
         if (orderObjcet == null) {
-            return new JsonErrorResponses(200, null, false, new Error(206, "fail ", "Order not found"));
+            return new JsonErrorResponses(400, "", false, new Error(206, "fail ", "Order not found"));
         } else {
 
             //user id not the same
             if (orderObjcet.getUserID().equals(userIdToken) == false) {
-                return new JsonErrorResponses(200, null, false, new Error(203, "fail", "Token belong to different user"));
+                return new JsonErrorResponses(400, "", false, new Error(203, "fail", "Token belong to different user"));
 
             } else {
 
                 for (Booking b : orderObjcet.getBookings()) {
 //                    int statusTemp = updateTicketStatus(b.getTicketID(), "AVAILABLE");
                     JsonErrorResponses statusTemp = updateTicketStatus(b.getTicketID(), "AVAILABLE");
-                    if (statusTemp.getMessageContainer().getCode() != 100) {
+                    if (statusTemp.getErrorContainer().getCode() != 100) {
                         return statusTemp;
                     }
 //                    statusTemp=0;
@@ -199,7 +213,7 @@ public class OrderService {
                     orderObjcetRepository.save(orderObjcet);
                     return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
                 } else {
-                    return new JsonErrorResponses(200, null, false, new Error(209, "fail", "return payment not succeed"));
+                    return new JsonErrorResponses(400, "", false, new Error(209, "fail", "return payment not succeed"));
                 }
 
             }
@@ -334,15 +348,15 @@ public class OrderService {
 
         //1 - expired
         if(errornr==1) {
-            return new JsonErrorResponses(200, null, false, new Error(201, "fail", "token expired"));
+            return new JsonErrorResponses(401, "", false, new Error(201, "fail", "token expired"));
 
         }
         //2 - notvalid
         else if (errornr==2){
-            return new JsonErrorResponses(200, null, false, new Error(202, "fail", "token not valid"));
+            return new JsonErrorResponses(402, "", false, new Error(202, "fail", "token not valid"));
         }
 
-        return new JsonErrorResponses(200, null, false, new Error(202, "fail", "token not valid"));
+        return new JsonErrorResponses(402, "", false, new Error(202, "fail", "token not valid"));
 //        return new StringRES(false);
     }
 

@@ -219,7 +219,8 @@ public class OrdersApplication implements CommandLineRunner, Filter {
                         }
                     } catch (final io.jsonwebtoken.SignatureException e) {
                         throw new ServletException("Invalid token");
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         response.sendRedirect("/orders/error/2");
 //                    chain.doFilter(req, res);
                     }

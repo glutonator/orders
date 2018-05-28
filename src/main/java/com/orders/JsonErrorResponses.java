@@ -1,49 +1,56 @@
 package com.orders;
 
 public class JsonErrorResponses<T> {
-    private int StatusCode;
-    private T Result;
-    private boolean Success;
-    private Error MessageContainer;
+    public int statusCode;
+    public T result;
+    public boolean success;
+    public Error errorContainer ;
 
-    public JsonErrorResponses(int statusCode, T result, boolean success, Error messageContainer) {
-        StatusCode = statusCode;
-        Result = result;
-        Success = success;
-        MessageContainer = messageContainer;
+    public JsonErrorResponses() {
+
+    }
+
+    public JsonErrorResponses(int statusCode, T result, boolean success, Error errorContainer) {
+        this.statusCode = statusCode;
+        this.result = result;
+        this.success = success;
+        this.errorContainer = errorContainer;
     }
 
     public int getStatusCode() {
-        return StatusCode;
+        return statusCode;
     }
 
     public void setStatusCode(int statusCode) {
-        StatusCode = statusCode;
+        this.statusCode = statusCode;
     }
 
     public T getResult() {
-        return Result;
+        return result;
     }
 
     public void setResult(T result) {
-        Result = result;
+        this.result = result;
     }
 
     public boolean isSuccess() {
-        return Success;
+        return success;
     }
 
     public void setSuccess(boolean success) {
-        Success = success;
+        this.success = success;
     }
 
-    public Error getMessageContainer() {
-        return MessageContainer;
+    public Error getErrorContainer() {
+        return errorContainer;
     }
 
-    public void setMessageContainer(Error messageContainer) {
-        MessageContainer = messageContainer;
+    public void setErrorContainer(Error errorContainer) {
+        this.errorContainer = errorContainer;
     }
+
+
+
 }
 
 
