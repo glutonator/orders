@@ -183,6 +183,10 @@ public class OrderService {
                 return new JsonErrorResponses(400, "", false, new Error(203, "fail", "Token belong to different user"));
 
             } else {
+                if(orderObjcet.isStatus()==false) {
+                    return new JsonErrorResponses(400, "", false, new Error(210, "fail", "Order already revoked"));
+
+                }
 
                 for (Booking b : orderObjcet.getBookings()) {
 //                    int statusTemp = updateTicketStatus(b.getTicketID(), "AVAILABLE");
@@ -358,6 +362,25 @@ public class OrderService {
 
         return new JsonErrorResponses(402, "", false, new Error(202, "fail", "token not valid"));
 //        return new StringRES(false);
+    }
+
+    public JsonErrorResponses getOrderDetails(Long idorder, Long userIdToken  ) {
+
+        OrderObjcet orderObjcet = orderObjcetRepository.findById(idorder).orElse(null);
+        if (orderObjcet == null) {
+            return new JsonErrorResponses(400, "", false, new Error(206, "fail ", "Order not found"));
+        } else {
+
+            //user id not the same
+            if (orderObjcet.getUserID().equals(userIdToken) == false) {
+                return new JsonErrorResponses(400, "", false, new Error(203, "fail", "Token belong to different user"));
+            }
+            else{
+                return new JsonErrorResponses(200, orderObjcet, true, new Error(200, "success", "everything is fine, action finished properly"));
+            }
+        }
+
+//                orderObjcetRepository.findById(idorder).orElse(null);
     }
 
 }

@@ -94,44 +94,45 @@ public class OrdersApplication implements CommandLineRunner, Filter {
     @Override
     public void run(String... args) throws Exception {
 
-        // =======================================
-
-
-        //
-
-        // Create a Post
-        OrderObjcet post = new OrderObjcet((long) 22);
-        post.setPaymentOrder(orderObjcetRepository.count() + 10);
-        post.setStatus(true);
-        //post.setUserID((long)22);
-        // Create two tags
-        //LocalDateTime tempdate=LocalDateTime.of(2018,04,21,12,14,57);
-        Booking comment1 = new Booking(Long.valueOf(44), Long.valueOf(10), LocalDateTime.now(), true);
-//        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
-        comment1.setOrderObjcet(post);
-        Booking comment2 = new Booking((long) 44, (long) 11, LocalDateTime.now(), true);
-//        Booking comment2 = new Booking((long)45,(long)45);
-
-        comment2.setOrderObjcet(post);
-
-
-        // Add tag references in the post
-        post.getBookings().add(comment1);
-        post.getBookings().add(comment2);
-
-        // Add post reference in the tags
-        //tag1.getOrderObjcets().add(post);
-        //tag2.getOrderObjcets().add(post);
-
-        orderObjcetRepository.save(post);
-        // OrderObjcet orderObjcet2= orderObjcetRepository.findById((long)1).orElse(null);
-
-
-        OrderObjcet orderObjcet = orderObjcetRepository.findById((long) 1).orElse(null);
-        Booking comment3 = new Booking((long) 44, (long) 5, LocalDateTime.now(), true);
-        comment3.setOrderObjcet(orderObjcet);
-        orderObjcet.getBookings().add(comment3);
-        orderObjcetRepository.save(orderObjcet);
+        System.out.print("Microservice starts");
+//        // =======================================
+//
+//
+//        //
+//
+//        // Create a Post
+//        OrderObjcet post = new OrderObjcet((long) 22);
+//        post.setPaymentOrder(orderObjcetRepository.count() + 10);
+//        post.setStatus(true);
+//        //post.setUserID((long)22);
+//        // Create two tags
+//        //LocalDateTime tempdate=LocalDateTime.of(2018,04,21,12,14,57);
+//        Booking comment1 = new Booking(Long.valueOf(44), Long.valueOf(10), LocalDateTime.now(), true);
+////        Booking comment1  = new Booking(Long.valueOf(22),Long.valueOf(33));
+//        comment1.setOrderObjcet(post);
+//        Booking comment2 = new Booking((long) 44, (long) 11, LocalDateTime.now(), true);
+////        Booking comment2 = new Booking((long)45,(long)45);
+//
+//        comment2.setOrderObjcet(post);
+//
+//
+//        // Add tag references in the post
+//        post.getBookings().add(comment1);
+//        post.getBookings().add(comment2);
+//
+//        // Add post reference in the tags
+//        //tag1.getOrderObjcets().add(post);
+//        //tag2.getOrderObjcets().add(post);
+//
+//        orderObjcetRepository.save(post);
+//        // OrderObjcet orderObjcet2= orderObjcetRepository.findById((long)1).orElse(null);
+//
+//
+//        OrderObjcet orderObjcet = orderObjcetRepository.findById((long) 1).orElse(null);
+//        Booking comment3 = new Booking((long) 44, (long) 5, LocalDateTime.now(), true);
+//        comment3.setOrderObjcet(orderObjcet);
+//        orderObjcet.getBookings().add(comment3);
+//        orderObjcetRepository.save(orderObjcet);
         // =======================================
 
     }
@@ -148,16 +149,9 @@ public class OrdersApplication implements CommandLineRunner, Filter {
 
 //        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Origin", "*");
-
-//        response.setHeader("Acess-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
-//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
-//        response.setContentType("text/plain;charset=UTF-8");
-//        String dadsa = request.getContentType().toString();
 
-//        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
-//        response.setCharacterEncoding("UTF-8");
 
 
         //authorization
@@ -165,7 +159,7 @@ public class OrdersApplication implements CommandLineRunner, Filter {
         String pathToRequest = request.getServletPath();
 
         //To Asia microsevice
-        if (pathToRequest.startsWith("/orders/event/delete/") == true) {
+        if (pathToRequest.startsWith("/orders/event/delete/") == true || pathToRequest.contains("swagger") || pathToRequest.startsWith("/v2")) {
             chain.doFilter(req, res);
         } else {
             if (authHeader == null) {
