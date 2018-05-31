@@ -28,3 +28,8 @@ szczególy w dokumentacji tego mikroserwisu
 
 admin może używać następujących końców /all_orders oraz /event/{eventid}
 pozostałe końce może używać zarówno admin jak i zwykły użytkownik(premium czy nie premium)
+
+Zwracane statusCode jak jest wszystko dobrze to 200,\
+ jak jest coś nie tak to 400,\
+ jak jest token expired to 401,\
+ a jak nie ważny podpis tokena(nieprawidłowy token) to 402 
