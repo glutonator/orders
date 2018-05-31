@@ -33,3 +33,5 @@ Zwracane statusCode jak jest wszystko dobrze to 200,\
  jak jest coś nie tak to 400,\
  jak jest token expired to 401,\
  a jak nie ważny podpis tokena(nieprawidłowy token) to 402 
+ 
+ Przykładowe requesty: https://documenter.getpostman.com/view/4203408/rso-mfwesteuropecloudappazurecom/RW1hiwGF
