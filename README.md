@@ -25,3 +25,6 @@ Kody odpowiedzi: \
 
 funckje zwracają też błedy wynikając z komuniakcji z mikroserwisem zarządzania biletami i wyadzrzeniami, te kody błedu to: 105,109,110,111\
 szczególy w dokumentacji tego mikroserwisu
+
+admin może używać następujących końców /all_orders oraz /event/{eventid
+pozostałe końce może używać zarówno admin jak i zwykły użytkownik(premium czy nie premium)
