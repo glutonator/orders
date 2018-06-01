@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+
+  demo-mysql:
+    image: mariadb:10.1.19
+    ports:
+      - 8083:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: RSO.projekt.2018
+      MYSQL_DATABASE: new_schema
+  spring-boot-jpa-docker-webapp:
+    image: g00glen00b/orders
+    depends_on:
+      - demo-mysql
+    ports:
+      - 8181:8181
+    environment:
+      DATABASE_HOST: demo-mysql
+      DATABASE_NAME: new_schema
+      DATABASE_USER: root
+      DATABASE_PASSWORD: RSO.projekt.2018
+      DATABASE_PORT: 3306
