@@ -35,3 +35,16 @@ Zwracane statusCode jak jest wszystko dobrze to 200,\
  a jak nie ważny podpis tokena(nieprawidłowy token) to 402 
  
  Przykładowe requesty: https://documenter.getpostman.com/view/4203408/rso-mfwesteuropecloudappazurecom/RW1hiwGF
+ 
+ Opis RESTApi:
+ /orders/new_order - składanie zamówienia na wybrane bilety - wymagane pola userID oraz w "liscie" bookings pola ticketID oraz eventID - reszta i tak się nadpisze\
+ /orders/user/{userid} - wszsytkie zamowienia użytkownika o tym id w tym odwołane i nieodwołane\
+ /orders/resignation/{orderid} - rezygnacja z zamowienia o danym id\
+ /orders/event/{eventid} - wszystkie bilety zarezerwowane na dane wydarzenie\
+ /orders/event/delete/{eventid} - kasowanie zamowieniń dla odwołanego wydarzenia, korzysta z niego tylko Asia
+ /orders/{order} - pobranie zamowienia o danym id\
+ /orders/all_orders - wszystkie zamówienia w bazie\
+ 
+ koncówki /orders/event/{eventid} oraz /orders/all_orders wykorzsystuje tylko admin, reszat może zawróno admin jak i użytkownik
+ wszędzie gdzie ma to sens jest weryfikacja czy dany użytkownik na pewno odwołuje się do danych które do niego należą, w innym przypadku zwracany jest błąd
+ 
