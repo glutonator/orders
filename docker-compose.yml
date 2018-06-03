@@ -12,7 +12,7 @@ services:
       MYSQL_ROOT_PASSWORD: RSO.projekt.2018
       MYSQL_DATABASE: new_schema
   spring-boot-jpa-docker-webapp:
-    image: g00glen00b/orders
+    image: glutonator/orders
     depends_on:
       - demo-mysql
     ports:

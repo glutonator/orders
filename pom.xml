@@ -113,7 +113,7 @@
 			<artifactId>docker-maven-plugin</artifactId>
 			<version>0.4.11</version>
 			<configuration>
-				<imageName>g00glen00b/${project.artifactId}</imageName>
+				<imageName>glutonator/${project.artifactId}</imageName>
 				<dockerDirectory>${docker.baseDir}</dockerDirectory>
 				<resources>
 					<resource>
