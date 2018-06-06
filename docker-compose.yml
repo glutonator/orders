@@ -1,25 +1,50 @@
-version: '2.1'
-
+version: "3"
 services:
-
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
   demo-mysql:
     image: mariadb:10.1.19
     ports:
-      - 8083:3306
+      - "8083:3306"
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: RSO.projekt.2018
       MYSQL_DATABASE: new_schema
-  spring-boot-jpa-docker-webapp:
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  web:
     image: glutonator/orders
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     depends_on:
       - demo-mysql
     ports:
-      - 8181:8181
+      - "8181:8181"
     environment:
       DATABASE_HOST: demo-mysql
       DATABASE_NAME: new_schema
       DATABASE_USER: root
       DATABASE_PASSWORD: RSO.projekt.2018
       DATABASE_PORT: 3306
+    networks:
+      - webnet
+networks:
+  webnet:
